@@ -1,0 +1,142 @@
+# Translations template for OctoPrint-PiSupport.
+# Copyright (C) 2021 The OctoPrint Project
+# This file is distributed under the same license as the OctoPrint-PiSupport
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OctoPrint-PiSupport 2021.3.29\n"
+"Report-Msgid-Bugs-To: i18n@octoprint.org\n"
+"POT-Creation-Date: 2021-03-26 14:59+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: octoprint_pi_support/__init__.py:239
+msgid "Allows to check for the Pi's throttling status and environment info"
+msgstr ""
+
+#: octoprint_pi_support/__init__.py:291
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:1
+msgid "Pi Support"
+msgstr ""
+
+#: octoprint_pi_support/__init__.py:456
+msgid ""
+"Without this plugin OctoPrint will no longer be able to provide "
+"additional information about your Pi, which will make it more tricky to "
+"help you if you need support."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:36
+msgid ""
+"OctoPrint does not and never has supported the RPi Zero or Zero W. Use at"
+" least a Raspberry Pi 3, or risk bad performance and failed prints."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:41
+#, python-format
+msgid "You can read more <a href=\"%(url)s\" target=\"_blank\">in the FAQ</a>."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:45
+msgid ""
+"You can disable this message via Settings > Pi Support > Ignore warning "
+"on unsupported hardware"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:50
+msgid "Unsupported hardware detected"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:76
+msgid "OctoPi"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:124
+msgid ""
+"Undervoltage. Make sure your power supply and cabling are providing "
+"enough power to the Pi."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:133
+msgid "Frequency capping due to overheating. Improve cooling of the CPU and GPU."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:138
+msgid ""
+"A blinking symbol indicates a current issue, a non blinking symbol one "
+"that was observed some time since the Pi booted up."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:143
+msgid "Click the symbol in the navbar for more information."
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_about_octopi.jinja2:1
+msgid "About OctoPi"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_navbar.jinja2:1
+msgid "What do the symbols mean?"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_navbar.jinja2:2
+msgid "Undervoltage"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_navbar.jinja2:3
+msgid "Overheat"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:3
+msgid "Please restart OctoPrint after changing any of this plugin's settings."
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:9
+msgid "Disable warning about unsupported hardware"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:9
+msgid "Warning"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:11
+msgid ""
+"If you check this, you will no longer get warned if you run OctoPrint on "
+"Raspberry Pi models that are not officially supported due to bad "
+"performance that can lead to failed prints. Do so at your own risk."
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:18
+msgid ""
+"Enable under voltage and overheat detection via <code>vcgencmd "
+"get_throttled</code>"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:20
+msgid ""
+"This will regularly check with the Pi if something is amiss either with "
+"power regulation or CPU/GPU temperature."
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:25
+msgid "Advanced options"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:29
+msgid "Command for under voltage/overheat detection"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:32
+msgid ""
+"Defaults to <code>/usr/bin/vcgencmd get_throttled</code>. You usually "
+"shouldn't have to change this."
+msgstr ""
+

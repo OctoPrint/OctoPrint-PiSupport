@@ -1,0 +1,8 @@
+*.md
+*.css
+**/*.min.js
+build
+dist
+venv
+venv2
+venv3

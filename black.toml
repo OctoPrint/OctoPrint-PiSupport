@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 90
+include = '''
+
+(
+    (
+        octoprint_pi_support
+    ).*\.pyi?$
+)|(
+    setup\.py
+)
+'''
+exclude = '''
+
+(
+)
+'''
