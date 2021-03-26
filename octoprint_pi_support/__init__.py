@@ -339,7 +339,7 @@ class PiSupportPlugin(
 
     def get_update_information(self):
         return dict(
-            firmware_check=dict(
+            pi_support=dict(
                 displayName="Pi Support Plugin",
                 displayVersion=self._plugin_version,
                 # version check: github repository
