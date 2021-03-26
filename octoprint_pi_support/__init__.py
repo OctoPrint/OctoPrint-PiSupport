@@ -478,6 +478,7 @@ def __plugin_load__():
 
     global __plugin_hooks__
     __plugin_hooks__ = {
+        "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
         "octoprint.events.register_custom_events": register_custom_events,
         "octoprint.access.permissions": __plugin_implementation__.get_additional_permissions,
     }
