@@ -63,6 +63,8 @@ _FLAG_PAST_UNDERVOLTAGE = 1 << 16
 _FLAG_PAST_FREQ_CAPPED = 1 << 17
 _FLAG_PAST_THROTTLED = 1 << 18
 
+_UNRECOMMENDED_MODELS = ("Zero", "Zero W")
+
 
 class ThrottleState(object):
     @classmethod
@@ -197,6 +199,14 @@ def is_octopi():
     return os.path.exists(_OCTOPI_VERSION_PATH)
 
 
+def is_model_any_of(model, *args):
+    model = model.lower()
+    for arg in map(lambda x: x.lower(), args):
+        if "{} rev".format(arg) in model or model.endswith(arg):
+            return True
+    return False
+
+
 _octopi_version = None
 
 
@@ -277,7 +287,9 @@ class PiSupportPlugin(
         result.update(
             {
                 "throttle_state": self._throttle_state.as_dict(),
-                "model_unrecommended": "zero" in result.get("model").lower(),
+                "model_unrecommended": is_model_any_of(
+                    result.get("model"), *_UNRECOMMENDED_MODELS
+                ),
             }
         )
         return flask.jsonify(**result)

@@ -35,7 +35,7 @@ $(function () {
                 ) {
                     var warning = gettext(
                         "OctoPrint does not and never has supported the " +
-                            "RPi Zero or Zero W. Use at least a Raspberry Pi 3, or " +
+                            "RPi Zero or Zero W. Use at least a Raspberry Pi 3 or Zero 2, or " +
                             "risk bad performance and failed prints."
                     );
                     var faq = gettext(
