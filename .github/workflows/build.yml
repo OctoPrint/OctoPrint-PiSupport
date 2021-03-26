@@ -40,7 +40,7 @@ jobs:
           python-version: 3.7
       - name: 🏗 Set up dev dependencies
         run: |
-          pip install -e .
+          pip install -e .[develop]
       - name: 🚀 Run pre-commit
         run: |
           pre-commit run --all-files --show-diff-on-failure
@@ -59,8 +59,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: 🏗 Set up test dependencies
         run: |
-          pip install pytest
-          pip install -e .
+          pip install -e .[develop]
       - name: 🚀 Run test suite
         run: |
           pytest

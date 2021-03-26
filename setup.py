@@ -754,6 +754,10 @@ setup_parameters = create_plugin_setup_parameters(
     additional_data=plugin_additional_data,
     extra_requires={
         "develop": [
+            # testing
+            "pytest",
+            "ddt",
+            "mock",
             # pre-commit
             "pre-commit",
         ]
