@@ -59,6 +59,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: 🏗 Set up test dependencies
         run: |
+          pip install octoprint
           pip install -e .[develop]
       - name: 🚀 Run test suite
         run: |
