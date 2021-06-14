@@ -66,6 +66,30 @@ $(function () {
 
                 // Throttle state
                 self.fromThrottleState(response.throttle_state);
+                if (self.currentUndervoltage() || self.pastUndervoltage()) {
+                    var warning = gettext(
+                        "Your Raspberry Pi is reporting insuffient power. " +
+                            "Switch to an adequate power supply or risk bad " +
+                            "performance and failed prints."
+                    );
+                    var faq = gettext(
+                        "" +
+                            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
+                    );
+                    new PNotify({
+                        title: gettext("Undervoltage detected"),
+                        text:
+                            "<p>" +
+                            warning +
+                            "</p><p>" +
+                            _.sprintf(faq, {
+                                url: "https://faq.octoprint.org/pi-issues"
+                            }) +
+                            "</p>",
+                        type: "error",
+                        hide: false
+                    });
+                }
 
                 // OctoPi version
                 $("#pi_support_footer").remove();
