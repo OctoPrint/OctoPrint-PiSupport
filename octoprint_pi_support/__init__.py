@@ -262,13 +262,13 @@ class PiSupportPlugin(
         if not Permissions.PLUGIN_PI_SUPPORT_STATUS.can():
             return flask.abort(403)
 
-        environment = self.get_additional_environment()
-
-        result = {
-            "throttle_state": self._throttle_state.as_dict(),
-            "model_unrecommended": "zero" in environment.get("model").lower(),
-        }
-        result.update(environment)
+        result = self.get_additional_environment()
+        result.update(
+            {
+                "throttle_state": self._throttle_state.as_dict(),
+                "model_unrecommended": "zero" in result.get("model").lower(),
+            }
+        )
         return flask.jsonify(**result)
 
     # ~~ AssetPlugin
