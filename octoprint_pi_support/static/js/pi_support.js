@@ -117,56 +117,63 @@ $(function () {
         };
 
         self.popoverContent = ko.pureComputed(function () {
-            var undervoltageParagraphClasses = "muted";
-            var undervoltageSymbolClasses = "";
-
-            var overheatParagraphClasses = "muted";
-            var overheatSymbolClasses = "";
-
-            if (self.currentUndervoltage()) {
-                undervoltageSymbolClasses = "text-error pi_support_state_pulsate";
-                undervoltageParagraphClasses = "";
-            } else if (self.pastUndervoltage()) {
-                undervoltageSymbolClasses = "text-error";
-                undervoltageParagraphClasses = "";
-            }
-
-            if (self.currentOverheat()) {
-                overheatSymbolClasses = "text-error pi_support_state_pulsate";
-                overheatParagraphClasses = "";
-            } else if (self.pastOverheat()) {
-                overheatSymbolClasses = "text-error";
-                overheatParagraphClasses = "";
-            }
-
-            return (
-                "<p class='" +
-                undervoltageParagraphClasses +
-                "'><strong class='" +
-                undervoltageSymbolClasses +
-                '\'><i class="fa fa-bolt"></i><i class="fa fa-exclamation"></i></strong></strong> - ' +
+            var content = "";
+            var undervoltageParagraph =
+                '<p><strong><i class="fa fa-bolt"></i><i class="fa fa-exclamation"></i> Undervoltage:</strong> ' +
                 gettext(
-                    "Undervoltage. Make sure your power supply and cabling are providing enough power to the Pi."
+                    "Make sure your power supply and cabling are providing enough power to the Pi."
                 ) +
-                "</p>" +
-                "<p class='" +
-                overheatParagraphClasses +
-                "'><strong class='" +
-                overheatSymbolClasses +
-                '\'><i class="fa fa-thermometer-full"></i><i class="fa fa-exclamation"></i></strong> - ' +
+                "</p>";
+            var overheatParagraph =
+                '<p><strong><i class="fa fa-thermometer-full"></i><i class="fa fa-exclamation"></i> Overheating:</strong> ' +
                 gettext(
                     "Frequency capping due to overheating. Improve cooling of the CPU and GPU."
                 ) +
-                "</p>" +
-                "<p>" +
-                gettext(
-                    "A blinking symbol indicates a current issue, a non blinking symbol one that was observed some time since the Pi booted up."
-                ) +
-                "</p>" +
-                "<p><small>" +
-                gettext("Click the symbol in the navbar for more information.") +
-                "</small></p>"
-            );
+                "</p>";
+
+            if (self.currentIssue()) {
+                content += "<p><strong>" + gettext("Current issues:") + "</strong></p>";
+                content +=
+                    "<p><small>" +
+                    gettext(
+                        "The following issues are being observed <em>right now</em>:"
+                    ) +
+                    "</small></p>";
+                if (self.currentUndervoltage()) {
+                    content += undervoltageParagraph;
+                }
+                if (self.currentOverheat()) {
+                    content += overheatParagraph;
+                }
+            }
+
+            if (self.currentIssue() && self.pastIssue()) {
+                content += "<hr>";
+            }
+
+            if (self.pastIssue()) {
+                content +=
+                    "<p><strong>" + gettext("Issues since boot:") + "</strong></p>";
+                content +=
+                    "<p><small>" +
+                    gettext(
+                        "The following issues have been observed since the Pi was booted:"
+                    ) +
+                    "</small></p>";
+                if (self.pastUndervoltage() && !self.currentUndervoltage()) {
+                    content += undervoltageParagraph;
+                }
+                if (self.pastOverheat() && !self.currentOverheat()) {
+                    content += overheatParagraph;
+                }
+            }
+
+            content +=
+                "<hr><p><small><a href='' target='_blank'>" +
+                gettext("See also the FAQ...") +
+                "</a></small></p>";
+
+            return content;
         });
 
         self.onStartup = self.onServerReconnect = self.onUserLoggedIn = self.onUserLoggedOut = function () {
