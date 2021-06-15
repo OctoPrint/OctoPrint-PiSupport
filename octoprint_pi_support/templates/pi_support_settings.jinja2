@@ -12,6 +12,17 @@
         </div>
     </div>
 
+    {% if version.number and version.number.count(".") >= 2 and version.number.split(".")[:2] >= ["1", "7"] %}
+    <div class="control-group">
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.pi_support.ignore_undervoltage_on_printstart"> {{ _('Disable warning about undervoltage on print start') }} <label class="label label-important">{{ _('Warning') }}</label>
+            </label>
+            <span class="help-block">{{ _('If you check this, you will no longer get warned when starting prints during observed undervoltage issues. Do so at your own risk.') }}</span>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="control-group">
         <div class="controls">
             <label class="checkbox">

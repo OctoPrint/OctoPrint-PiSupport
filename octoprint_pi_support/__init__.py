@@ -325,6 +325,7 @@ class PiSupportPlugin(
             "vcgencmd_throttle_check_enabled": True,
             "vcgencmd_throttle_check_command": _VCGENCMD_THROTTLE,
             "ignore_unrecommended_model": False,
+            "ignore_undervoltage_on_printstart": False,
         }
 
     def get_settings_restricted_paths(self):

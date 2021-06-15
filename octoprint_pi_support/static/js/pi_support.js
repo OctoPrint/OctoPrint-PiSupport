@@ -193,6 +193,41 @@ $(function () {
 
             self.fromThrottleState(data.state);
         };
+
+        self.onBeforePrintStart = function (callback) {
+            if (
+                !self.settings.settings.plugins.pi_support.ignore_undervoltage_on_printstart() &&
+                (self.currentUndervoltage() || self.pastUndervoltage())
+            ) {
+                showConfirmationDialog({
+                    title: gettext("Undervoltage detected, print anyways?"),
+                    message:
+                        gettext(
+                            "Your Pi is reporting undervoltage. It is not recommended to start a print job until an adequate power supply has been installed."
+                        ) +
+                        " <a href='https://faq.octoprint.org/pi-issues' target='_blank'>" +
+                        gettext("See also the FAQ") +
+                        "</a>.",
+                    question: gettext("Start the print job anyway?"),
+                    cancel: gettext("No, don't print"),
+                    proceed: [
+                        gettext("Yes, print"),
+                        gettext("Yes, print & don't warn again")
+                    ],
+                    onproceed: function (idx) {
+                        if (idx === 1) {
+                            self.settings.settings.plugins.pi_support.ignore_undervoltage_on_printstart(
+                                true
+                            );
+                            self.settings.saveData();
+                        }
+                        callback();
+                    },
+                    nofade: true
+                });
+                return false;
+            }
+        };
     }
 
     OCTOPRINT_VIEWMODELS.push({
