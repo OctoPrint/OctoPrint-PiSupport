@@ -200,7 +200,7 @@ $(function () {
                 (self.currentUndervoltage() || self.pastUndervoltage())
             ) {
                 showConfirmationDialog({
-                    title: gettext("Undervoltage detected, print anyways?"),
+                    title: gettext("Undervoltage detected, print anyway?"),
                     message:
                         gettext(
                             "Your Pi is reporting undervoltage. It is not recommended to start a print job until an adequate power supply has been installed."
