@@ -242,6 +242,14 @@ class PiSupportPlugin(
             }
         ]
 
+    # Additional bundle files hook
+
+    def get_additional_bundle_files(self, *args, **kwargs):
+        return {
+            "webcamd.log": "/var/log/webcamd.log",
+            "haproxy.log": "/var/log/haproxy.log",
+        }
+
     # ~~ EnvironmentDetectionPlugin
 
     def get_additional_environment(self):
@@ -482,6 +490,7 @@ def __plugin_load__():
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
         "octoprint.events.register_custom_events": register_custom_events,
         "octoprint.access.permissions": __plugin_implementation__.get_additional_permissions,
+        "octoprint.systeminfo.additional_bundle_files": __plugin_implementation__.get_additional_bundle_files,
     }
 
     global __plugin_helpers__
