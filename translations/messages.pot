@@ -166,7 +166,7 @@ msgstr ""
 
 #: octoprint_pi_support/static/js/pi_support.js:70
 msgid ""
-"Your Raspberry Pi is reporting insuffient power. Switch to an adequate "
+"Your Raspberry Pi is reporting insufficient power. Switch to an adequate "
 "power supply or risk bad performance and failed prints."
 msgstr ""
 
