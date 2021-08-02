@@ -245,10 +245,13 @@ class PiSupportPlugin(
     # Additional bundle files hook
 
     def get_additional_bundle_files(self, *args, **kwargs):
-        return {
-            "webcamd.log": "/var/log/webcamd.log",
-            "haproxy.log": "/var/log/haproxy.log",
-        }
+        if is_octopi():
+            return {
+                "webcamd.log": "/var/log/webcamd.log",
+                "haproxy.log": "/var/log/haproxy.log",
+            }
+        else:
+            return {}
 
     # ~~ EnvironmentDetectionPlugin
 
