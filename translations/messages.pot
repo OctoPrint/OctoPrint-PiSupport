@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OctoPrint-PiSupport 2021.6.14\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2021-06-14 18:12+0200\n"
+"POT-Creation-Date: 2021-08-02 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,13 +25,13 @@ msgstr ""
 
 #: build/lib/octoprint_pi_support/__init__.py:289
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:1
-#: octoprint_pi_support/__init__.py:289
+#: octoprint_pi_support/__init__.py:297
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:1
 msgid "Pi Support"
 msgstr ""
 
 #: build/lib/octoprint_pi_support/__init__.py:454
-#: octoprint_pi_support/__init__.py:454
+#: octoprint_pi_support/__init__.py:463
 msgid ""
 "Without this plugin OctoPrint will no longer be able to provide "
 "additional information about your Pi, which will make it more tricky to "
@@ -122,6 +122,7 @@ msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:9
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:9
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:19
 msgid "Warning"
 msgstr ""
 
@@ -134,31 +135,31 @@ msgid ""
 msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:18
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:18
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:29
 msgid ""
 "Enable under voltage and overheat detection via <code>vcgencmd "
 "get_throttled</code>"
 msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:20
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:20
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:31
 msgid ""
 "This will regularly check with the Pi if something is amiss either with "
 "power regulation or CPU/GPU temperature."
 msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:25
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:25
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:36
 msgid "Advanced options"
 msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:29
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:29
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:40
 msgid "Command for under voltage/overheat detection"
 msgstr ""
 
 #: build/lib/octoprint_pi_support/templates/pi_support_settings.jinja2:32
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:32
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:43
 msgid ""
 "Defaults to <code>/usr/bin/vcgencmd get_throttled</code>. You usually "
 "shouldn't have to change this."
@@ -198,5 +199,45 @@ msgstr ""
 
 #: octoprint_pi_support/static/js/pi_support.js:173
 msgid "See also the FAQ..."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:203
+msgid "Undervoltage detected, print anyway?"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:205
+msgid ""
+"Your Pi is reporting undervoltage. It is not recommended to start a print"
+" job until an adequate power supply has been installed."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:209
+msgid "See also the FAQ"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:211
+msgid "Start the print job anyway?"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:212
+msgid "No, don't print"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:214
+msgid "Yes, print"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:215
+msgid "Yes, print & don't warn again"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:19
+msgid "Disable warning about undervoltage on print start"
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:21
+msgid ""
+"If you check this, you will no longer get warned when starting prints "
+"during observed undervoltage issues. Do so at your own risk."
 msgstr ""
 
