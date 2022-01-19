@@ -19,6 +19,7 @@ from octoprint.util.platform import CLOSE_FDS
 
 _PROC_DT_MODEL_PATH = "/proc/device-tree/model"
 _OCTOPI_VERSION_PATH = "/etc/octopi_version"
+_OCTOPIUPTODATE_BUILD_PATH = "/etc/octopiuptodate_build"
 _VCGENCMD_THROTTLE = "/usr/bin/vcgencmd get_throttled"
 
 _CHECK_INTERVAL_OK = 300
@@ -42,6 +43,7 @@ if __LOCAL_DEBUG:
     )
     _PROC_DT_MODEL_PATH = os.path.join(base, "fake_model.txt")
     _OCTOPI_VERSION_PATH = os.path.join(base, "fake_octopi.txt")
+    _OCTOPIUPTODATE_BUILD_PATH = os.path.join(base, "fake_octopiuptodate.txt")
     _VCGENCMD_THROTTLE = "{} {}".format(
         sys.executable, os.path.join(base, "fake_vcgencmd.py")
     )
@@ -199,6 +201,10 @@ def is_octopi():
     return os.path.exists(_OCTOPI_VERSION_PATH)
 
 
+def is_octopiuptodate():
+    return os.path.exists(_OCTOPIUPTODATE_BUILD_PATH)
+
+
 def is_model_any_of(model, *args):
     model = model.lower()
     for arg in map(lambda x: x.lower(), args):
@@ -218,6 +224,19 @@ def get_octopi_version():
             _octopi_version = f.readline().strip(" \t\r\n\0")
 
     return _octopi_version
+
+
+_octopiuptodate_build = None
+
+
+def get_octopiuptodate_build():
+    global _octopiuptodate_build
+
+    if _octopiuptodate_build is None:
+        with io.open(_OCTOPIUPTODATE_BUILD_PATH, "rt", encoding="utf-8") as f:
+            _octopiuptodate_build = f.readline().strip(" \t\r\n\0")
+
+    return _octopiuptodate_build
 
 
 class PiSupportPlugin(
@@ -274,6 +293,9 @@ class PiSupportPlugin(
 
         if is_octopi():
             result["octopi_version"] = get_octopi_version()
+
+        if is_octopiuptodate():
+            result["octopiuptodate_build"] = get_octopiuptodate_build()
 
         return result
 
