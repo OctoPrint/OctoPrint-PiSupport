@@ -15,6 +15,8 @@ $(function () {
         self.currentIssue = ko.observable(false);
         self.pastIssue = ko.observable(false);
 
+        self.notifications = {};
+
         self.requestData = function () {
             if (
                 !self.loginState.hasPermission(
@@ -44,24 +46,30 @@ $(function () {
                     );
                     var remove = gettext(
                         "You can disable this message via Settings > " +
-                            "Pi Support > Ignore warning on unsupported hardware"
+                            "Pi Support > Disable warning about unsupported hardware"
                     );
-                    new PNotify({
-                        title: gettext("Unsupported hardware detected"),
-                        text:
-                            "<p>" +
-                            warning +
-                            "</p><p>" +
-                            _.sprintf(faq, {
-                                url: "https://faq.octoprint.org/recommended-hardware"
-                            }) +
-                            "</p><p>" +
-                            "<small>" +
-                            remove +
-                            "</small></p>",
-                        type: "error",
-                        hide: false
-                    });
+
+                    if (self.notifications.unrecommended === undefined) {
+                        self.notifications.unrecommended = new PNotify({
+                            title: gettext("Unsupported hardware detected"),
+                            text:
+                                "<p>" +
+                                warning +
+                                "</p><p>" +
+                                _.sprintf(faq, {
+                                    url: "https://faq.octoprint.org/recommended-hardware"
+                                }) +
+                                "</p><p>" +
+                                "<small>" +
+                                remove +
+                                "</small></p>",
+                            type: "error",
+                            hide: false
+                        });
+                    }
+                } else if (self.notifications.unrecommended !== undefined) {
+                    self.notifications.unrecommended.remove();
+                    self.notifications.unrecommended = undefined;
                 }
 
                 // Throttle functional
@@ -72,11 +80,17 @@ $(function () {
                             "sure the system user OctoPrint is running under is a member of " +
                             'the "video" group.'
                     );
-                    new PNotify({
-                        title: gettext("Cannot check for throttling"),
-                        text: "<p>" + warning + "</p>",
-                        hide: false
-                    });
+
+                    if (self.notifications.vcgencmd_broken === undefined) {
+                        self.notifications.vcgencmd_broken = new PNotify({
+                            title: gettext("Cannot check for throttling"),
+                            text: "<p>" + warning + "</p>",
+                            hide: false
+                        });
+                    }
+                } else if (self.notifications.vcgencmd_broken !== undefined) {
+                    self.notifications.vcgencmd_broken.remove();
+                    self.notifications.vcgencmd_broken = undefined;
                 }
 
                 // Throttle state
@@ -91,19 +105,66 @@ $(function () {
                         "" +
                             'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
                     );
-                    new PNotify({
-                        title: gettext("Undervoltage detected"),
-                        text:
-                            "<p>" +
-                            warning +
-                            "</p><p>" +
-                            _.sprintf(faq, {
-                                url: "https://faq.octoprint.org/pi-issues"
-                            }) +
-                            "</p>",
-                        type: "error",
-                        hide: false
-                    });
+
+                    if (self.notifications.throttled === undefined) {
+                        self.notifications.throttled = new PNotify({
+                            title: gettext("Undervoltage detected"),
+                            text:
+                                "<p>" +
+                                warning +
+                                "</p><p>" +
+                                _.sprintf(faq, {
+                                    url: "https://faq.octoprint.org/pi-issues"
+                                }) +
+                                "</p>",
+                            type: "error",
+                            hide: false
+                        });
+                    }
+                } else if (self.notifications.throttled !== undefined) {
+                    self.notifications.throttled.remove();
+                    self.notifications.throttled = undefined;
+                }
+
+                // SSH warn
+                if (
+                    response.default_password &&
+                    !self.settings.settings.plugins.pi_support.ignore_default_password()
+                ) {
+                    var warning = gettext(
+                        'The default password for the system user "pi" has not ' +
+                            "been changed. This is a security risk - please login to " +
+                            "your Pi via SSH and change the password."
+                    );
+                    var faq = gettext(
+                        "" +
+                            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
+                    );
+                    var remove = gettext(
+                        "You can disable this message via Settings > " +
+                            "Pi Support > Disable warning about default system password"
+                    );
+
+                    if (self.notifications.default_password === undefined) {
+                        self.notifications.default_password = new PNotify({
+                            title: gettext("Default system password not changed"),
+                            text:
+                                "<p>" +
+                                warning +
+                                "</p><p>" +
+                                _.sprintf(faq, {
+                                    url: "https://faq.octoprint.org/pi-default-password"
+                                }) +
+                                "</p><p>" +
+                                "<small>" +
+                                remove +
+                                "</small></p>",
+                            hide: false
+                        });
+                    }
+                } else if (self.notifications.default_password !== undefined) {
+                    self.notifications.default_password.remove();
+                    self.notifications.default_password = undefined;
                 }
 
                 // OctoPi version

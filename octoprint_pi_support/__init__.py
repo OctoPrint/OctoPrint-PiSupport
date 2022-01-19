@@ -22,6 +22,7 @@ _PROC_DT_MODEL_PATH = "/proc/device-tree/model"
 _OCTOPI_VERSION_PATH = "/etc/octopi_version"
 _OCTOPIUPTODATE_BUILD_PATH = "/etc/octopiuptodate_build"
 _VCGENCMD_THROTTLE = "/usr/bin/vcgencmd get_throttled"
+_SSHWARN_PATH = "/run/sshwarn"
 
 _CHECK_INTERVAL_OK = 300
 _CHECK_INTERVAL_THROTTLED = 30
@@ -40,20 +41,20 @@ if __LOCAL_DEBUG:
             "fakes",
         )
     )
+    debug = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), "..", ".local_debug")
+    )
     _PROC_DT_MODEL_PATH = os.path.join(base, "fake_model.txt")
     _OCTOPI_VERSION_PATH = os.path.join(base, "fake_octopi.txt")
     _OCTOPIUPTODATE_BUILD_PATH = os.path.join(base, "fake_octopiuptodate.txt")
+    _SSHWARN_PATH = os.path.join(debug, "sshwarn")
 
     import itertools
 
     _VCGENCMD_OUTPUT = itertools.chain(
         iter(("0x0", "0x0", "0x50005", "0x50000", "0x70007")), itertools.repeat("0x70005")
     )
-    _VCGENCMD_BROKEN = os.path.exists(
-        os.path.realpath(
-            os.path.join(os.path.dirname(__file__), "..", ".vcgencmd_broken")
-        )
-    )
+    _VCGENCMD_BROKEN = os.path.exists(os.path.join(debug, "vcgencmd_broken"))
 
     _CHECK_INTERVAL_OK = 10
     _CHECK_INTERVAL_THROTTLED = 5
@@ -246,6 +247,17 @@ def get_octopiuptodate_build():
     return _octopiuptodate_build
 
 
+def has_default_password():
+    # It would be nicer to actually fetch the hash from /etc/shadow here and verify it
+    # has been changed, but for that we'd require super user access just to read the
+    # file, which is just not a good idea.
+    #
+    # So instead we use the same mechanism that RPi OS uses to show the nag screen on the
+    # command prompt, with the downside that it won't trigger if SSH is disabled for
+    # whatever reason.
+    return os.path.exists(_SSHWARN_PATH)
+
+
 class PiSupportPlugin(
     octoprint.plugin.EnvironmentDetectionPlugin,
     octoprint.plugin.SimpleApiPlugin,
@@ -320,6 +332,7 @@ class PiSupportPlugin(
                 "model_unrecommended": is_model_any_of(
                     result.get("model"), *_UNRECOMMENDED_MODELS
                 ),
+                "default_password": has_default_password(),
             }
         )
         return flask.jsonify(**result)
@@ -379,6 +392,7 @@ class PiSupportPlugin(
             "vcgencmd_throttle_check_command": _VCGENCMD_THROTTLE,
             "ignore_unrecommended_model": False,
             "ignore_undervoltage_on_printstart": False,
+            "ignore_default_password": False,
         }
 
     def get_settings_restricted_paths(self):
