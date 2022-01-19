@@ -9,6 +9,8 @@ from octoprint.util.platform import CLOSE_FDS
 
 OCTOPI_VERSION = "0.14.0"
 
+OCTOPI_UPTODATE_BUILD = "0.18.0-1.7.2-20220119085355"
+
 DT_MODEL = "Raspberry Pi Model F Rev 1.1"
 
 VCGENCMD = "/usr/bin/vcgencmd get_throttled"
@@ -29,6 +31,16 @@ class PiSupportTestCase(unittest.TestCase):
         m.assert_called_once_with("/etc/octopi_version", "rt", encoding="utf-8")
         self.assertEqual(version, OCTOPI_VERSION)
 
+    def test_get_octopiuptodate_build(self):
+        from octoprint_pi_support import get_octopiuptodate_build
+
+        with mock.patch(OPEN_SIGNATURE, mock.mock_open(), create=True) as m:
+            m.return_value.readline.return_value = OCTOPI_UPTODATE_BUILD
+            build = get_octopiuptodate_build()
+
+        m.assert_called_once_with("/etc/octopiuptodate_build", "rt", encoding="utf-8")
+        self.assertEqual(build, OCTOPI_UPTODATE_BUILD)
+
     def test_get_proc_dt_model(self):
         from octoprint_pi_support import get_proc_dt_model
 
@@ -42,7 +54,7 @@ class PiSupportTestCase(unittest.TestCase):
     def test_get_vcgencmd_throttle_state(self):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
-        with mock.patch("sarge.get_stdout", mock.MagicMock()) as m:
+        with mock.patch("sarge.get_both", mock.MagicMock()) as m:
             m.return_value = "throttled=0x70005"
             state = get_vcgencmd_throttled_state(VCGENCMD)
 
@@ -57,7 +69,7 @@ class PiSupportTestCase(unittest.TestCase):
     def test_get_vcgencmd_throttle_state_unparseable1(self):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
-        with mock.patch("sarge.get_stdout", mock.MagicMock()) as m:
+        with mock.patch("sarge.get_both", mock.MagicMock()) as m:
             m.return_value = "invalid"
 
             try:
@@ -71,7 +83,7 @@ class PiSupportTestCase(unittest.TestCase):
     def test_get_vcgencmd_throttle_state_unparseable2(self):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
-        with mock.patch("sarge.get_stdout", mock.MagicMock()) as m:
+        with mock.patch("sarge.get_both", mock.MagicMock()) as m:
             m.return_value = "throttled=0xinvalid"
 
             try:
