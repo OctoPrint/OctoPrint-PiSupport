@@ -6,6 +6,7 @@ __copyright__ = "Copyright (C) 2017 The OctoPrint Project - Released under terms
 
 import io
 import os
+from getpass import getuser
 
 import flask
 import octoprint.events
@@ -31,8 +32,6 @@ __LOCAL_DEBUG = os.path.exists(
 
 if __LOCAL_DEBUG:
     ### mocks & settings for local debugging
-    import sys
-
     base = os.path.realpath(
         os.path.join(
             os.path.dirname(__file__),
@@ -44,13 +43,16 @@ if __LOCAL_DEBUG:
     _PROC_DT_MODEL_PATH = os.path.join(base, "fake_model.txt")
     _OCTOPI_VERSION_PATH = os.path.join(base, "fake_octopi.txt")
     _OCTOPIUPTODATE_BUILD_PATH = os.path.join(base, "fake_octopiuptodate.txt")
-    _VCGENCMD_THROTTLE = "{} {}".format(
-        sys.executable, os.path.join(base, "fake_vcgencmd.py")
-    )
+
     import itertools
 
     _VCGENCMD_OUTPUT = itertools.chain(
         iter(("0x0", "0x0", "0x50005", "0x50000", "0x70007")), itertools.repeat("0x70005")
+    )
+    _VCGENCMD_BROKEN = os.path.exists(
+        os.path.realpath(
+            os.path.join(os.path.dirname(__file__), "..", ".vcgencmd_broken")
+        )
     )
 
     _CHECK_INTERVAL_OK = 10
@@ -185,12 +187,17 @@ def get_proc_dt_model():
 
 def get_vcgencmd_throttled_state(command):
     if __LOCAL_DEBUG:
-        output = "throttled={}".format(next(_VCGENCMD_OUTPUT))  # mock for local debugging
+        if _VCGENCMD_BROKEN:
+            output = "VCHI initialization failed"
+        else:
+            output = "throttled={}".format(
+                next(_VCGENCMD_OUTPUT)
+            )  # mock for local debugging
     else:
-        output = sarge.get_stdout(command, close_fds=CLOSE_FDS)
+        output = sarge.get_both(command, close_fds=CLOSE_FDS)
 
     if "throttled=0x" not in output:
-        raise ValueError('cannot parse "{}" output: {}'.format(command, output))
+        raise ValueError('Cannot parse "{}" output: {}'.format(command, output))
 
     value = output[len("throttled=") :].strip(" \t\r\n\0")
     value = int(value, 0)
@@ -309,6 +316,7 @@ class PiSupportPlugin(
         result.update(
             {
                 "throttle_state": self._throttle_state.as_dict(),
+                "throttle_functional": self._throttle_functional,
                 "model_unrecommended": is_model_any_of(
                     result.get("model"), *_UNRECOMMENDED_MODELS
                 ),
@@ -437,12 +445,15 @@ class PiSupportPlugin(
         self._logger.debug('Retrieving throttle state via "{}"'.format(command))
         try:
             state = get_vcgencmd_throttled_state(command)
-        except ValueError:
-            self._logger.warning(
-                'Fetching the current throttle state via "{}" doesn\'t work'.format(
-                    command
+        except ValueError as ex:
+            error = str(ex)
+            self._logger.warning(error)
+            if "VCHI initialization failed" in error:
+                self._logger.warning(
+                    'Make sure the system user "{}" is in the "video" group.'.format(
+                        getuser()
+                    )
                 )
-            )
             self._throttle_functional = False
             return
 

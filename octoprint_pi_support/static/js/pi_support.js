@@ -64,6 +64,21 @@ $(function () {
                     });
                 }
 
+                // Throttle functional
+                if (!response.throttle_functional) {
+                    var warning = gettext(
+                        "OctoPrint cannot check for throttling situations " +
+                            "reported by your Pi. <code>vcgencmd</code> doesn't work as expected. Make " +
+                            "sure the system user OctoPrint is running under is a member of " +
+                            'the "video" group.'
+                    );
+                    new PNotify({
+                        title: gettext("Cannot check for throttling"),
+                        text: "<p>" + warning + "</p>",
+                        hide: false
+                    });
+                }
+
                 // Throttle state
                 self.fromThrottleState(response.throttle_state);
                 if (self.currentUndervoltage() || self.pastUndervoltage()) {

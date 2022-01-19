@@ -8,3 +8,4 @@ dist
 .DS_Store
 *.zip
 .local_debug
+.vcgencmd_broken
