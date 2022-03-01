@@ -189,16 +189,20 @@ def get_proc_dt_model():
 def get_vcgencmd_throttled_state(command):
     if __LOCAL_DEBUG:
         if _VCGENCMD_BROKEN:
-            output = "VCHI initialization failed"
+            output = ""
+            error = "VCHI initialization failed"
         else:
             output = "throttled={}".format(
                 next(_VCGENCMD_OUTPUT)
             )  # mock for local debugging
+            error = ""
     else:
-        output = sarge.get_both(command, close_fds=CLOSE_FDS)
+        output, error = sarge.get_both(command, close_fds=CLOSE_FDS)
 
     if "throttled=0x" not in output:
-        raise ValueError('Cannot parse "{}" output: {}'.format(command, output))
+        raise ValueError(
+            'Cannot parse "{}" output: {}'.format(command, error if error else output)
+        )
 
     value = output[len("throttled=") :].strip(" \t\r\n\0")
     value = int(value, 0)
