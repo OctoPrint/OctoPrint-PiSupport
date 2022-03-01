@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OctoPrint-PiSupport 2021.10.28\n"
+"Project-Id-Version: OctoPrint-PiSupport 2022.3.1\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2021-10-28 09:18+0200\n"
+"POT-Creation-Date: 2022-03-01 09:57+0100\n"
 "PO-Revision-Date: 2021-06-14 18:16+0200\n"
 "Last-Translator: \n"
 "Language: de\n"
@@ -17,20 +17,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
-#: octoprint_pi_support/__init__.py:247
+#: octoprint_pi_support/__init__.py:285
 msgid "Allows to check for the Pi's throttling status and environment info"
 msgstr ""
 "Erlaubt die Abfrage des Throttlestatus und der Umgebungsinformationen des"
 " Raspberry Pis"
 
-#: octoprint_pi_support/__init__.py:312
+#: octoprint_pi_support/__init__.py:355
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:1
 msgid "Pi Support"
 msgstr "Pi Support"
 
-#: octoprint_pi_support/__init__.py:478
+#: octoprint_pi_support/__init__.py:525
 msgid ""
 "Without this plugin OctoPrint will no longer be able to provide "
 "additional information about your Pi, which will make it more tricky to "
@@ -40,8 +40,7 @@ msgstr ""
 "über deinen Pi Instanz zur Verfügung stellen, was es ggf. schwieriger "
 "macht, dir zu helfen, falls du Support brauchst."
 
-#: octoprint_pi_support/static/js/pi_support.js:36
-#, fuzzy
+#: octoprint_pi_support/static/js/pi_support.js:38
 msgid ""
 "OctoPrint does not and never has supported the RPi Zero or Zero W. Use at"
 " least a Raspberry Pi 3 or Zero 2, or risk bad performance and failed "
@@ -51,27 +50,40 @@ msgstr ""
 "mindestens einen Raspberry Pi 3 oder Zero 2, oder riskiere schlechte "
 "Performance und fehlgeschlagene Druckaufträge."
 
-#: octoprint_pi_support/static/js/pi_support.js:41
-#: octoprint_pi_support/static/js/pi_support.js:75
+#: octoprint_pi_support/static/js/pi_support.js:43
+#: octoprint_pi_support/static/js/pi_support.js:104
+#: octoprint_pi_support/static/js/pi_support.js:139
 #, python-format
 msgid "You can read more <a href=\"%(url)s\" target=\"_blank\">in the FAQ</a>."
 msgstr ""
 "Du kannst mehr dazu <a href=\"%(url)s\" target=\"_blank\">in der FAQ</a> "
 "lesen."
 
-#: octoprint_pi_support/static/js/pi_support.js:45
+#: octoprint_pi_support/static/js/pi_support.js:47
+#, fuzzy
 msgid ""
-"You can disable this message via Settings > Pi Support > Ignore warning "
-"on unsupported hardware"
+"You can disable this message via Settings > Pi Support > Disable warning "
+"about unsupported hardware"
 msgstr ""
 "Du kannst diese Nachricht deaktiveren über Einstellungen > Pi Support > "
 "Ignoriere Warnung über nicht unterstützte Hardware"
 
-#: octoprint_pi_support/static/js/pi_support.js:50
+#: octoprint_pi_support/static/js/pi_support.js:54
 msgid "Unsupported hardware detected"
 msgstr "Nicht unterstützte Hardware erkannt"
 
-#: octoprint_pi_support/static/js/pi_support.js:70
+#: octoprint_pi_support/static/js/pi_support.js:77
+msgid ""
+"OctoPrint cannot check for throttling situations reported by your Pi. "
+"<code>vcgencmd</code> doesn't work as expected. Make sure the system user"
+" OctoPrint is running under is a member of the \"video\" group."
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:86
+msgid "Cannot check for throttling"
+msgstr ""
+
+#: octoprint_pi_support/static/js/pi_support.js:99
 msgid ""
 "Your Raspberry Pi is reporting insufficient power. Switch to an adequate "
 "power supply or risk bad performance and failed prints."
@@ -80,15 +92,37 @@ msgstr ""
 "ausreichendes Netzteil, oder riskiere schlechte Performance und "
 "fehlgeschlagene Druckaufträge."
 
-#: octoprint_pi_support/static/js/pi_support.js:80
+#: octoprint_pi_support/static/js/pi_support.js:111
 msgid "Undervoltage detected"
 msgstr "Zu niedrige Spannung"
 
-#: octoprint_pi_support/static/js/pi_support.js:100
+#: octoprint_pi_support/static/js/pi_support.js:134
+msgid ""
+"The default password for the system user \"pi\" has not been changed. "
+"This is a security risk - please login to your Pi via SSH and change the "
+"password."
+msgstr ""
+"Das Standardpasswort des Systemnutzers \"pi\" wurde nicht geändert. "
+"Das ist ein Sicherheitsrisiko - bitte melde dich bei deinem Pi über SSH an "
+"und ändere das Passwort."
+
+#: octoprint_pi_support/static/js/pi_support.js:143
+msgid ""
+"You can disable this message via Settings > Pi Support > Disable warning "
+"about default system password"
+msgstr ""
+"Du kannst diese Nachricht deaktiveren über Einstellungen > Pi Support > "
+"Ignoriere Warnung über Standardsystempasswort"
+
+#: octoprint_pi_support/static/js/pi_support.js:150
+msgid "Default system password not changed"
+msgstr "Standardsystempasswort nicht geändert"
+
+#: octoprint_pi_support/static/js/pi_support.js:176
 msgid "OctoPi"
 msgstr "OctoPi"
 
-#: octoprint_pi_support/static/js/pi_support.js:123
+#: octoprint_pi_support/static/js/pi_support.js:199
 msgid ""
 "Make sure your power supply and cabling are providing enough power to the"
 " Pi."
@@ -96,39 +130,39 @@ msgstr ""
 "Stelle sicher, dass dein Netzteil und die Verkabelung dem Pi genug Strom "
 "liefern."
 
-#: octoprint_pi_support/static/js/pi_support.js:129
+#: octoprint_pi_support/static/js/pi_support.js:205
 msgid "Frequency capping due to overheating. Improve cooling of the CPU and GPU."
 msgstr ""
 "Heruntertaktung aufgrund von Überhitzung. Verbessere die Kühlung von CPU "
 "und GPU."
 
-#: octoprint_pi_support/static/js/pi_support.js:135
+#: octoprint_pi_support/static/js/pi_support.js:211
 msgid "Current issues:"
 msgstr "Aktuelle Probleme:"
 
-#: octoprint_pi_support/static/js/pi_support.js:138
+#: octoprint_pi_support/static/js/pi_support.js:214
 msgid "The following issues are being observed <em>right now</em>:"
 msgstr "Die folgenden Probleme werden <em>gerade jetzt</em> gemeldet:"
 
-#: octoprint_pi_support/static/js/pi_support.js:156
+#: octoprint_pi_support/static/js/pi_support.js:232
 msgid "Issues since boot:"
 msgstr "Probleme seit dem Bootvorgang:"
 
-#: octoprint_pi_support/static/js/pi_support.js:159
+#: octoprint_pi_support/static/js/pi_support.js:235
 msgid "The following issues have been observed since the Pi was booted:"
 msgstr ""
 "Die folgenden Probleme wurde seit dem letzten Bootvorgang des Pis "
 "gemeldet:"
 
-#: octoprint_pi_support/static/js/pi_support.js:173
+#: octoprint_pi_support/static/js/pi_support.js:249
 msgid "See also the FAQ..."
 msgstr "Siehe also die FAQ..."
 
-#: octoprint_pi_support/static/js/pi_support.js:203
+#: octoprint_pi_support/static/js/pi_support.js:279
 msgid "Undervoltage detected, print anyway?"
 msgstr "Zu niedrige Spannung erkannt, trotzdem drucken?"
 
-#: octoprint_pi_support/static/js/pi_support.js:205
+#: octoprint_pi_support/static/js/pi_support.js:281
 msgid ""
 "Your Pi is reporting undervoltage. It is not recommended to start a print"
 " job until an adequate power supply has been installed."
@@ -136,23 +170,23 @@ msgstr ""
 "Dein Pi meldet eine zu niedrige Spannung. Es ist nicht empfohlen, einen "
 "Druckauftrag zu starten, bis ein ausreichendes Netzteil installiert ist."
 
-#: octoprint_pi_support/static/js/pi_support.js:209
+#: octoprint_pi_support/static/js/pi_support.js:285
 msgid "See also the FAQ"
 msgstr "Siehe also die FAQ"
 
-#: octoprint_pi_support/static/js/pi_support.js:211
+#: octoprint_pi_support/static/js/pi_support.js:287
 msgid "Start the print job anyway?"
 msgstr "Den Druck trotzdem starten?"
 
-#: octoprint_pi_support/static/js/pi_support.js:212
+#: octoprint_pi_support/static/js/pi_support.js:288
 msgid "No, don't print"
 msgstr "Nein, nicht drucken"
 
-#: octoprint_pi_support/static/js/pi_support.js:214
+#: octoprint_pi_support/static/js/pi_support.js:290
 msgid "Yes, print"
 msgstr "Ja, drucken"
 
-#: octoprint_pi_support/static/js/pi_support.js:215
+#: octoprint_pi_support/static/js/pi_support.js:291
 msgid "Yes, print & don't warn again"
 msgstr "Ja, drucken & nicht mehr warnen"
 
@@ -183,7 +217,8 @@ msgid "Disable warning about unsupported hardware"
 msgstr "Ignoriere Warnung über nicht unterstützte Hardware"
 
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:9
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:19
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:18
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:28
 msgid "Warning"
 msgstr "Warnung"
 
@@ -199,11 +234,21 @@ msgstr ""
 "offiziell unterstützt werden. Du tust dies auf deine eigene "
 "Verantwortung."
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:19
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:18
+msgid "Disable warning about default system password"
+msgstr "Ignoriere Warnung über Standardsystempasswort"
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:20
+msgid ""
+"If you check this, you will no longer get warned if you still have the "
+"default password set on your \"pi\" system user. This is a security risk."
+msgstr ""
+
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:28
 msgid "Disable warning about undervoltage on print start"
 msgstr "Ignoriere Warnung über zu niedrige Spannung beim Druckstart"
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:21
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:30
 msgid ""
 "If you check this, you will no longer get warned when starting prints "
 "during observed undervoltage issues. Do so at your own risk."
@@ -212,7 +257,7 @@ msgstr ""
 "einen Druckjob startest während dein Pi zu niedrige Spannung meldet. Du "
 "tust dies auf deine eigene Verantwortung."
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:29
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:38
 msgid ""
 "Enable under voltage and overheat detection via <code>vcgencmd "
 "get_throttled</code>"
@@ -220,7 +265,7 @@ msgstr ""
 "Erkennung zu niedriger Spannung und Überhitzung via <code>vcgencmd "
 "get_throttled</code> einschalten"
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:31
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:40
 msgid ""
 "This will regularly check with the Pi if something is amiss either with "
 "power regulation or CPU/GPU temperature."
@@ -228,15 +273,15 @@ msgstr ""
 "Es wird regelmäßig geprüft, ob etwas mit der Spannungsversorgung oder der"
 " CPU/GPU Temperatur des Pis nicht stimmt."
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:36
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:45
 msgid "Advanced options"
 msgstr "Erweiterte Optionen"
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:40
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:49
 msgid "Command for under voltage/overheat detection"
 msgstr "Befehl für Spannungs-/Überhitzungserkennung"
 
-#: octoprint_pi_support/templates/pi_support_settings.jinja2:43
+#: octoprint_pi_support/templates/pi_support_settings.jinja2:52
 msgid ""
 "Defaults to <code>/usr/bin/vcgencmd get_throttled</code>. You usually "
 "shouldn't have to change this."
