@@ -55,7 +55,7 @@ class PiSupportTestCase(unittest.TestCase):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
         with mock.patch("sarge.get_both", mock.MagicMock()) as m:
-            m.return_value = "throttled=0x70005"
+            m.return_value = ("throttled=0x70005", "")
             state = get_vcgencmd_throttled_state(VCGENCMD)
 
         m.assert_called_once_with(VCGENCMD, close_fds=CLOSE_FDS)
@@ -70,7 +70,7 @@ class PiSupportTestCase(unittest.TestCase):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
         with mock.patch("sarge.get_both", mock.MagicMock()) as m:
-            m.return_value = "invalid"
+            m.return_value = ("", "invalid")
 
             try:
                 get_vcgencmd_throttled_state(VCGENCMD)
@@ -84,7 +84,7 @@ class PiSupportTestCase(unittest.TestCase):
         from octoprint_pi_support import get_vcgencmd_throttled_state
 
         with mock.patch("sarge.get_both", mock.MagicMock()) as m:
-            m.return_value = "throttled=0xinvalid"
+            m.return_value = ("throttled=0xinvalid", "")
 
             try:
                 get_vcgencmd_throttled_state(VCGENCMD)
