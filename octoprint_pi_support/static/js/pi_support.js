@@ -245,9 +245,9 @@ $(function () {
             }
 
             content +=
-                "<hr><p><small><a href='' target='_blank'>" +
-                gettext("See also the FAQ...") +
-                "</a></small></p>";
+                "<hr><p><small>" +
+                gettext("Click the navbar icon for more information.") +
+                "</small></p>";
 
             return content;
         });
