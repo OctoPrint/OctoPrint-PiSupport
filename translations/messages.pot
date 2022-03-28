@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OctoPrint-PiSupport 2022.3.1\n"
+"Project-Id-Version: OctoPrint-PiSupport 2022.3.28\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2022-03-01 09:57+0100\n"
+"POT-Creation-Date: 2022-03-28 11:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,16 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: octoprint_pi_support/__init__.py:285
+#: octoprint_pi_support/__init__.py:289
 msgid "Allows to check for the Pi's throttling status and environment info"
 msgstr ""
 
-#: octoprint_pi_support/__init__.py:355
+#: octoprint_pi_support/__init__.py:359
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:1
 msgid "Pi Support"
 msgstr ""
 
-#: octoprint_pi_support/__init__.py:525
+#: octoprint_pi_support/__init__.py:529
 msgid ""
 "Without this plugin OctoPrint will no longer be able to provide "
 "additional information about your Pi, which will make it more tricky to "
@@ -127,7 +127,7 @@ msgid "The following issues have been observed since the Pi was booted:"
 msgstr ""
 
 #: octoprint_pi_support/static/js/pi_support.js:249
-msgid "See also the FAQ..."
+msgid "Click the navbar icon for more information."
 msgstr ""
 
 #: octoprint_pi_support/static/js/pi_support.js:279

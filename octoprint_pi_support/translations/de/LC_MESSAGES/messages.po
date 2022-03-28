@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OctoPrint-PiSupport 2022.3.1\n"
+"Project-Id-Version: OctoPrint-PiSupport 2022.3.28\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2022-03-01 09:57+0100\n"
+"POT-Creation-Date: 2022-03-28 11:10+0200\n"
 "PO-Revision-Date: 2021-06-14 18:16+0200\n"
 "Last-Translator: \n"
 "Language: de\n"
@@ -19,18 +19,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: octoprint_pi_support/__init__.py:285
+#: octoprint_pi_support/__init__.py:289
 msgid "Allows to check for the Pi's throttling status and environment info"
 msgstr ""
 "Erlaubt die Abfrage des Throttlestatus und der Umgebungsinformationen des"
 " Raspberry Pis"
 
-#: octoprint_pi_support/__init__.py:355
+#: octoprint_pi_support/__init__.py:359
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:1
 msgid "Pi Support"
 msgstr "Pi Support"
 
-#: octoprint_pi_support/__init__.py:525
+#: octoprint_pi_support/__init__.py:529
 msgid ""
 "Without this plugin OctoPrint will no longer be able to provide "
 "additional information about your Pi, which will make it more tricky to "
@@ -102,8 +102,8 @@ msgid ""
 "This is a security risk - please login to your Pi via SSH and change the "
 "password."
 msgstr ""
-"Das Standardpasswort des Systemnutzers \"pi\" wurde nicht geändert. "
-"Das ist ein Sicherheitsrisiko - bitte melde dich bei deinem Pi über SSH an "
+"Das Standardpasswort des Systemnutzers \"pi\" wurde nicht geändert. Das "
+"ist ein Sicherheitsrisiko - bitte melde dich bei deinem Pi über SSH an "
 "und ändere das Passwort."
 
 #: octoprint_pi_support/static/js/pi_support.js:143
@@ -155,8 +155,8 @@ msgstr ""
 "gemeldet:"
 
 #: octoprint_pi_support/static/js/pi_support.js:249
-msgid "See also the FAQ..."
-msgstr "Siehe also die FAQ..."
+msgid "Click the navbar icon for more information."
+msgstr "Klick für weitere Informationen auf das Symbol in der Navbar."
 
 #: octoprint_pi_support/static/js/pi_support.js:279
 msgid "Undervoltage detected, print anyway?"
@@ -288,41 +288,3 @@ msgid ""
 msgstr ""
 "Standardeinstellung ist <code>/usr/bin/vcgencmd get_throttled</code>. Du "
 "solltest das gewöhnlich nicht ändern müssen."
-
-#~ msgid ""
-#~ "OctoPrint does not and never has "
-#~ "supported the RPi Zero or Zero W."
-#~ " Use at least a Raspberry Pi 3,"
-#~ " or risk bad performance and failed"
-#~ " prints."
-#~ msgstr ""
-#~ "OctoPrint hat noch nie den RPi "
-#~ "Zero oder Zero W unterstützt. Verwende"
-#~ " mindestens einen Raspberry Pi 3, "
-#~ "oder riskiere schlechte Performance und "
-#~ "fehlgeschlagene Druckaufträge."
-
-#~ msgid ""
-#~ "Undervoltage. Make sure your power "
-#~ "supply and cabling are providing enough"
-#~ " power to the Pi."
-#~ msgstr ""
-#~ "Zu niedrige Spannung. Stelle sicher, "
-#~ "dass dein Netzteil und die Verkabelung"
-#~ " dem Pi genug Strom liefern."
-
-#~ msgid ""
-#~ "A blinking symbol indicates a current"
-#~ " issue, a non blinking symbol one "
-#~ "that was observed some time since "
-#~ "the Pi booted up."
-#~ msgstr ""
-#~ "Ein blinkendes Symbol zeigt ein "
-#~ "aktuelles Problem an, ein nicht "
-#~ "blinkendes ein Problem, das irgendwann "
-#~ "seit dem Bootup des Pis aufgetreten "
-#~ "ist."
-
-#~ msgid "Click the symbol in the navbar for more information."
-#~ msgstr "Klick für weitere Informationen auf das Symbol in der Navbar."
-
