@@ -37,7 +37,7 @@
             <label class="checkbox">
                 <input type="checkbox" data-bind="checked: settings.plugins.pi_support.vcgencmd_throttle_check_enabled"> {{ _('Enable under voltage and overheat detection via <code>vcgencmd get_throttled</code>') }}
             </label>
-            <span class="help-block">{{ _('This will regularly check with the Pi if something is amiss either with power regulation or CPU/GPU temperature.') }}</span>
+            <span class="help-block">{{ _('This will regularly check with the Pi if something is amiss either with power regulation or CPU/GPU temperature. Disable at your own risk. You will have to re-enable this when getting assistance on the forums or Discord. Changes require a restart of OctoPrint.') }}</span>
         </div>
     </div>
 
