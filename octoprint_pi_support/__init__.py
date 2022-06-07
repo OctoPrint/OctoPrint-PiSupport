@@ -277,7 +277,17 @@ class PiSupportPlugin(
         self._throttle_check = None
         self._throttle_undervoltage = False
         self._throttle_overheat = False
-        self._throttle_functional = True
+        self._throttle_check_enabled = True
+        self._throttle_check_functional = True
+
+    def initialize(self):
+        self._throttle_check_enabled = self._settings.get_boolean(
+            ["vcgencmd_throttle_check_enabled"]
+        )
+        if not self._throttle_check_enabled:
+            self._logger.warning(
+                "Throttle check via vcgencmd disabled by user. Potential undervoltage or overheating issues will not be detected."
+            )
 
     # Additional permissions hook
 
@@ -311,7 +321,9 @@ class PiSupportPlugin(
         result = {"model": get_proc_dt_model()}
 
         self._check_throttled_state()
-        if self._throttle_functional:
+        result["throttle_check_enabled"] = self._throttle_check_enabled
+        result["throttle_check_functional"] = self._throttle_check_functional
+        if self._throttle_check_enabled and self._throttle_check_functional:
             result["throttle_state"] = self._throttle_state.raw_value_hex
 
         if is_octopi():
@@ -331,8 +343,9 @@ class PiSupportPlugin(
         result = self.get_additional_environment()
         result.update(
             {
+                "throttle_enabled": self._throttle_check_enabled,
+                "throttle_functional": self._throttle_check_functional,
                 "throttle_state": self._throttle_state.as_dict(),
-                "throttle_functional": self._throttle_functional,
                 "model_unrecommended": is_model_any_of(
                     result.get("model"), *_UNRECOMMENDED_MODELS
                 ),
@@ -445,19 +458,22 @@ class PiSupportPlugin(
             return _CHECK_INTERVAL_OK
 
     def _check_throttled_state_condition(self):
-        return self._throttle_functional
+        return self._throttle_check_enabled and self._throttle_check_functional
 
     def get_throttle_state(self, run_now=False):
         """Exposed as public helper."""
         if run_now:
             self._check_throttled_state()
 
-        if not self._throttle_functional:
+        if not self._throttle_check_enabled or not self._throttle_check_functional:
             return False
 
         return self._throttle_state.as_dict()
 
     def _check_throttled_state(self):
+        if not self._throttle_check_enabled:
+            return
+
         command = self._settings.get(["vcgencmd_throttle_check_command"])
 
         self._logger.debug('Retrieving throttle state via "{}"'.format(command))
@@ -472,7 +488,7 @@ class PiSupportPlugin(
                         getuser()
                     )
                 )
-            self._throttle_functional = False
+            self._throttle_check_functional = False
             return
 
         if self._throttle_state == state:
