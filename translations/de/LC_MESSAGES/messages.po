@@ -8,29 +8,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OctoPrint-PiSupport 2022.3.28\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2022-03-28 11:10+0200\n"
+"POT-Creation-Date: 2022-06-13 11:21+0200\n"
 "PO-Revision-Date: 2021-06-14 18:16+0200\n"
 "Last-Translator: \n"
 "Language: de\n"
 "Language-Team: de <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.10.1\n"
 
-#: octoprint_pi_support/__init__.py:289
+#: octoprint_pi_support/__init__.py:299
 msgid "Allows to check for the Pi's throttling status and environment info"
 msgstr ""
 "Erlaubt die Abfrage des Throttlestatus und der Umgebungsinformationen des"
 " Raspberry Pis"
 
-#: octoprint_pi_support/__init__.py:359
+#: octoprint_pi_support/__init__.py:372
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:1
 msgid "Pi Support"
 msgstr "Pi Support"
 
-#: octoprint_pi_support/__init__.py:529
+#: octoprint_pi_support/__init__.py:545
 msgid ""
 "Without this plugin OctoPrint will no longer be able to provide "
 "additional information about your Pi, which will make it more tricky to "
@@ -268,10 +268,15 @@ msgstr ""
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:40
 msgid ""
 "This will regularly check with the Pi if something is amiss either with "
-"power regulation or CPU/GPU temperature."
+"power regulation or CPU/GPU temperature. Disable at your own risk. You "
+"will have to re-enable this when getting assistance on the forums or "
+"Discord. Changes require a restart of OctoPrint."
 msgstr ""
-"Es wird regelmäßig geprüft, ob etwas mit der Spannungsversorgung oder der"
-" CPU/GPU Temperatur des Pis nicht stimmt."
+"Es wird regelmäßig geprüft, ob etwas mit der Spannungsversorgung oder der "
+"CPU/GPU Temperatur des Pis nicht stimmt. Deaktivere dies auf deine eigene "
+"Verantwortung. Du wirst es reaktivieren müssen, wenn du Hilfe im Forum "
+"oder auf Discord erbittest. Änderungen erfordern einen Neustart von "
+"OctoPrint."
 
 #: octoprint_pi_support/templates/pi_support_settings.jinja2:45
 msgid "Advanced options"
