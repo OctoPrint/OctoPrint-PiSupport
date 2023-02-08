@@ -252,9 +252,13 @@ $(function () {
             return content;
         });
 
-        self.onStartup = self.onServerReconnect = self.onUserLoggedIn = self.onUserLoggedOut = function () {
-            self.requestData();
-        };
+        self.onStartup =
+            self.onServerReconnect =
+            self.onUserLoggedIn =
+            self.onUserLoggedOut =
+                function () {
+                    self.requestData();
+                };
 
         self.onDataUpdaterPluginMessage = function (plugin, data) {
             if (plugin !== "pi_support") return;

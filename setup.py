@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 ########################################################################################################################
 ### Do not forget to adjust the following variables to your own plugin.
 
@@ -453,9 +451,7 @@ class BundleTranslation(Command):
             shutil.rmtree(target_path)
 
         print(
-            "Copying translations for locale {locale} from {source_path} to {target_path}...".format(
-                **locals()
-            )
+            f"Copying translations for locale {locale} from {source_path} to {target_path}..."
         )
         shutil.copytree(source_path, target_path)
 
@@ -523,7 +519,7 @@ class PackTranslation(Command):
                 date=now.strftime("%Y%m%d%H%M%S"),
             ),
         )
-        print("Packing translation to {zip_path}".format(**locals()))
+        print(f"Packing translation to {zip_path}")
 
         def add_recursively(zip, path, prefix):
             if not os.path.isdir(path):
@@ -535,12 +531,12 @@ class PackTranslation(Command):
                 if os.path.isdir(entry_path):
                     add_recursively(zip, entry_path, new_prefix)
                 elif os.path.isfile(entry_path):
-                    print("Adding {entry_path} as {new_prefix}".format(**locals()))
+                    print(f"Adding {entry_path} as {new_prefix}")
                     zip.write(entry_path, new_prefix)
 
-        meta_str = "last_update: {date}\n".format(date=now.isoformat())
+        meta_str = f"last_update: {now.isoformat()}\n"
         if self.author:
-            meta_str += "author: {author}\n".format(author=self.author)
+            meta_str += f"author: {self.author}\n"
 
         zip_locale_root = self.__class__.pack_path_prefix + locale
 
@@ -549,7 +545,7 @@ class PackTranslation(Command):
         with zipfile.ZipFile(zip_path, "w") as zip:
             add_recursively(zip, locale_dir, zip_locale_root)
 
-            print("Adding meta.yaml as {zip_locale_root}/meta.yaml".format(**locals()))
+            print(f"Adding meta.yaml as {zip_locale_root}/meta.yaml")
             zip.writestr(zip_locale_root + "/meta.yaml", meta_str)
 
 
@@ -620,7 +616,7 @@ def create_plugin_setup_parameters(
     import pkg_resources
 
     if package is None:
-        package = "octoprint_{identifier}".format(**locals())
+        package = f"octoprint_{identifier}"
 
     if additional_data is None:
         additional_data = list()
@@ -676,8 +672,8 @@ def create_plugin_setup_parameters(
             pot_file=pot_file,
             output_dir=translation_dir,
             bundled_dir=bundled_dir,
-            pack_name_prefix="{name}-i18n-".format(**locals()),
-            pack_path_prefix="_plugins/{identifier}/".format(**locals()),
+            pack_name_prefix=f"{name}-i18n-",
+            pack_path_prefix=f"_plugins/{identifier}/",
         )
     )
 
@@ -687,13 +683,13 @@ def create_plugin_setup_parameters(
         [package]
         + list(
             filter(
-                lambda x: x.startswith("{package}.".format(package=package)),
+                lambda x: x.startswith(f"{package}."),
                 find_packages(where=source_folder, exclude=ignored_packages),
             )
         )
         + additional_packages
     )
-    print("Found packages: {packages!r}".format(**locals()))
+    print(f"Found packages: {packages!r}")
 
     return dict(
         name=name,
@@ -723,9 +719,7 @@ def create_plugin_setup_parameters(
         dependency_links=dependency_links,
         # Hook the plugin into the "octoprint.plugin" entry point, mapping the plugin_identifier to the plugin_package.
         # That way OctoPrint will be able to find the plugin and load it.
-        entry_points={
-            "octoprint.plugin": ["{identifier} = {package}".format(**locals())]
-        },
+        entry_points={"octoprint.plugin": [f"{identifier} = {package}"]},
     )
 
 

@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = "Copyright (C) 2017 The OctoPrint Project - Released under terms of the AGPLv3 License"
 
-import io
 import os
 from getpass import getuser
 
@@ -71,7 +67,7 @@ _FLAG_PAST_THROTTLED = 1 << 18
 _UNRECOMMENDED_MODELS = ("Zero", "Zero W")
 
 
-class ThrottleState(object):
+class ThrottleState:
     @classmethod
     def from_value(cls, value=0):
         if value == 0:
@@ -99,7 +95,7 @@ class ThrottleState(object):
         self._past_throttled = False
 
         for key, value in kwargs.items():
-            local_key = "_{}".format(key)
+            local_key = f"_{key}"
             if hasattr(self, local_key) and isinstance(value, bool):
                 setattr(self, local_key, value)
 
@@ -145,7 +141,7 @@ class ThrottleState(object):
 
     @property
     def raw_value_hex(self):
-        return "0x{:X}".format(self._raw_value)
+        return f"0x{self._raw_value:X}"
 
     def __eq__(self, other):
         if not isinstance(other, ThrottleState):
@@ -180,7 +176,7 @@ def get_proc_dt_model():
     global _proc_dt_model
 
     if _proc_dt_model is None:
-        with io.open(_PROC_DT_MODEL_PATH, "rt", encoding="utf-8") as f:
+        with open(_PROC_DT_MODEL_PATH, encoding="utf-8") as f:
             _proc_dt_model = f.readline().strip(" \t\r\n\0")
 
     return _proc_dt_model
@@ -200,9 +196,7 @@ def get_vcgencmd_throttled_state(command):
         output, error = sarge.get_both(command, close_fds=CLOSE_FDS)
 
     if "throttled=0x" not in output:
-        raise ValueError(
-            'Cannot parse "{}" output: {}'.format(command, error if error else output)
-        )
+        raise ValueError(f"Cannot parse {command!r} output: {error if error else output}")
 
     value = output[len("throttled=") :].strip(" \t\r\n\0")
     value = int(value, 0)
@@ -220,7 +214,7 @@ def is_octopiuptodate():
 def is_model_any_of(model, *args):
     model = model.lower()
     for arg in map(lambda x: x.lower(), args):
-        if "{} rev".format(arg) in model or model.endswith(arg):
+        if f"{arg} rev" in model or model.endswith(arg):
             return True
     return False
 
@@ -232,7 +226,7 @@ def get_octopi_version():
     global _octopi_version
 
     if _octopi_version is None:
-        with io.open(_OCTOPI_VERSION_PATH, "rt", encoding="utf-8") as f:
+        with open(_OCTOPI_VERSION_PATH, encoding="utf-8") as f:
             _octopi_version = f.readline().strip(" \t\r\n\0")
 
     return _octopi_version
@@ -245,7 +239,7 @@ def get_octopiuptodate_build():
     global _octopiuptodate_build
 
     if _octopiuptodate_build is None:
-        with io.open(_OCTOPIUPTODATE_BUILD_PATH, "rt", encoding="utf-8") as f:
+        with open(_OCTOPIUPTODATE_BUILD_PATH, encoding="utf-8") as f:
             _octopiuptodate_build = f.readline().strip(" \t\r\n\0")
 
     return _octopiuptodate_build
@@ -476,7 +470,7 @@ class PiSupportPlugin(
 
         command = self._settings.get(["vcgencmd_throttle_check_command"])
 
-        self._logger.debug('Retrieving throttle state via "{}"'.format(command))
+        self._logger.debug(f"Retrieving throttle state via {command!r}")
         try:
             state = get_vcgencmd_throttled_state(command)
         except ValueError as ex:
