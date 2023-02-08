@@ -12,7 +12,7 @@ jobs:
     name: 🔨 Build distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 🏗 Set up Python 3.7
         uses: actions/setup-python@v1
         with:
@@ -33,7 +33,7 @@ jobs:
     name: 🧹 Pre-commit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 🏗 Set up Python 3.7
         uses: actions/setup-python@v1
         with:
@@ -52,7 +52,7 @@ jobs:
         python: ["2.7", "3.7", "3.8", "3.9"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 🏗 Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v1
         with:
