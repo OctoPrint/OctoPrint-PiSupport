@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: 🏗 Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: 🏗 Install build dependencies
@@ -24,7 +24,7 @@ jobs:
         run: >-
           python setup.py sdist bdist_wheel
       - name: ⬆ Upload build result
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: 🏗 Set up Python 3.10
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: 🏗 Set up dev dependencies
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: 🏗 Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: 🏗 Set up test dependencies
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇ Download build result
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇ Download build result
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist
