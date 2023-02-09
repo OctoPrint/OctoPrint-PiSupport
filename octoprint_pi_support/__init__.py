@@ -264,7 +264,6 @@ class PiSupportPlugin(
     octoprint.plugin.StartupPlugin,
     octoprint.plugin.SettingsPlugin,
 ):
-
     # noinspection PyMissingConstructor
     def __init__(self):
         self._throttle_state = ThrottleState()
