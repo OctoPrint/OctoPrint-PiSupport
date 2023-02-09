@@ -12,7 +12,7 @@ DT_MODEL = "Raspberry Pi Model F Rev 1.1"
 
 VCGENCMD = "/usr/bin/vcgencmd get_throttled"
 
-OPEN_SIGNATURE = "io.open"
+OPEN_SIGNATURE = "builtins.open"
 
 
 class PiSupportTestCase(unittest.TestCase):
@@ -25,7 +25,7 @@ class PiSupportTestCase(unittest.TestCase):
             m.return_value.readline.return_value = OCTOPI_VERSION
             version = get_octopi_version()
 
-        m.assert_called_once_with("/etc/octopi_version", "rt", encoding="utf-8")
+        m.assert_called_once_with("/etc/octopi_version", encoding="utf-8")
         self.assertEqual(version, OCTOPI_VERSION)
 
     def test_get_octopiuptodate_build(self):
@@ -35,7 +35,7 @@ class PiSupportTestCase(unittest.TestCase):
             m.return_value.readline.return_value = OCTOPI_UPTODATE_BUILD
             build = get_octopiuptodate_build()
 
-        m.assert_called_once_with("/etc/octopiuptodate_build", "rt", encoding="utf-8")
+        m.assert_called_once_with("/etc/octopiuptodate_build", encoding="utf-8")
         self.assertEqual(build, OCTOPI_UPTODATE_BUILD)
 
     def test_get_proc_dt_model(self):
@@ -45,7 +45,7 @@ class PiSupportTestCase(unittest.TestCase):
             m.return_value.readline.return_value = DT_MODEL
             model = get_proc_dt_model()
 
-        m.assert_called_once_with("/proc/device-tree/model", "rt", encoding="utf-8")
+        m.assert_called_once_with("/proc/device-tree/model", encoding="utf-8")
         self.assertEqual(model, DT_MODEL)
 
     def test_get_vcgencmd_throttle_state(self):
