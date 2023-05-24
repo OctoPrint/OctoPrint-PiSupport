@@ -182,8 +182,7 @@ class CleanCommand(_clean):
                     if not self.dry_run:
                         shutil.rmtree(path)
                     print(
-                        "removed %s since it was empty"
-                        % path[len(self.source_folder) :]
+                        "removed %s since it was empty" % path[len(self.source_folder) :]
                     )
 
             def delete_file(path):
@@ -759,9 +758,7 @@ setup_parameters = create_plugin_setup_parameters(
     },
 )
 
-setup_parameters["long_description"] = read_file_contents(
-    os.path.join(here, "README.md")
-)
+setup_parameters["long_description"] = read_file_contents(os.path.join(here, "README.md"))
 setup_parameters["long_description_content_type"] = "text/markdown"
 
 setup(**setup_parameters)

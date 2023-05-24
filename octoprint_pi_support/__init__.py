@@ -54,9 +54,7 @@ def _gather_new_camerastack_files():
         os.system("/usr/bin/list-usb-cameras > /tmp/camerastack-usb.log")
         files["camerastack-usb.log"] = "/tmp/camerastack-usb.log"
     except Exception:
-        logging.getLogger(__name__).exception(
-            "Failed to create camerastack-usb.log file"
-        )
+        logging.getLogger(__name__).exception("Failed to create camerastack-usb.log file")
 
     return files
 
@@ -86,9 +84,7 @@ if __LOCAL_DEBUG:
 
     _gather_new_camerastack_files = lambda: {  # noqa: F811
         "camerastack-journal.log": os.path.join(base, "fake_camerastack_journal.txt"),
-        "camerastack-libcamera.log": os.path.join(
-            base, "fake_camerastack_libcamera.txt"
-        ),
+        "camerastack-libcamera.log": os.path.join(base, "fake_camerastack_libcamera.txt"),
         "camerastack-usb.log": os.path.join(base, "fake_camerastack_usb.txt"),
     }
 
@@ -127,8 +123,7 @@ class ThrottleState:
             "throttled": _FLAG_THROTTLED & value == _FLAG_THROTTLED,
             "past_undervoltage": _FLAG_PAST_UNDERVOLTAGE & value
             == _FLAG_PAST_UNDERVOLTAGE,
-            "past_freq_capped": _FLAG_PAST_FREQ_CAPPED & value
-            == _FLAG_PAST_FREQ_CAPPED,
+            "past_freq_capped": _FLAG_PAST_FREQ_CAPPED & value == _FLAG_PAST_FREQ_CAPPED,
             "past_throttled": _FLAG_PAST_THROTTLED & value == _FLAG_PAST_THROTTLED,
             "raw_value": value,
         }
@@ -245,9 +240,7 @@ def get_vcgencmd_throttled_state(command):
         output, error = sarge.get_both(command, close_fds=CLOSE_FDS)
 
     if "throttled=0x" not in output:
-        raise ValueError(
-            f"Cannot parse {command!r} output: {error if error else output}"
-        )
+        raise ValueError(f"Cannot parse {command!r} output: {error if error else output}")
 
     value = output[len("throttled=") :].strip(" \t\r\n\0")
     value = int(value, 0)
