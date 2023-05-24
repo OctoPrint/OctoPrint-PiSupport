@@ -1,0 +1,7 @@
+Available cameras
+-----------------
+0 : ov5647 [2592x1944] (/base/soc/i2c0mux/i2c@1/ov5647@36)
+    Modes: 'SGBRG10_CSI2P' : 640x480 [30.00 fps - (0, 0)/0x0 crop]
+                             1296x972 [30.00 fps - (0, 0)/0x0 crop]
+                             1920x1080 [30.00 fps - (0, 0)/0x0 crop]
+                             2592x1944 [30.00 fps - (0, 0)/0x0 crop]

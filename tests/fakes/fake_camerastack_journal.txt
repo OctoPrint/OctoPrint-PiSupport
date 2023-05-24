@@ -1,0 +1,74 @@
+-- Journal begins at Thu 2022-09-22 01:23:40 BST, ends at Wed 2023-05-24 16:28:00 BST. --
+May 24 01:48:08 octopic systemd[1]: Starting camera-streamer...
+May 24 01:48:08 octopic camera-streamer-control[533]: Running start for camera-streamer-libcamera.service...
+May 24 01:48:08 octopic camera-streamer-control[533]: ... done.
+May 24 01:48:08 octopic camera-streamer-control[533]: Adding path unit for autolaunch of camera-streamer-usb@default
+May 24 01:48:08 octopic systemd[1]: Starting camera-streamer libcamera...
+May 24 01:48:09 octopic camera-streamer-control[533]: Running start for camera-streamer-usb-default.path...
+May 24 01:48:09 octopic camera-streamer-control[533]: ... done.
+May 24 01:48:09 octopic systemd[1]: Started camera-streamer default autolaunch.
+May 24 01:48:09 octopic systemd[1]: Finished camera-streamer.
+May 24 01:48:11 octopic sh[549]: /base/soc/i2c0mux/i2c@1/ov5647@36
+May 24 01:48:11 octopic systemd[1]: Started camera-streamer libcamera.
+May 24 01:48:15 octopic sh[589]: /usr/bin/camera-streamer Version: v0.1-21-g54f538e (54f538e)
+May 24 01:48:15 octopic sh[589]: [0:00:20.341406502] [589]  INFO Camera camera_manager.cpp:299 libcamera v0.0.4+22-923f5d70
+May 24 01:48:15 octopic sh[589]: [0:00:20.411405304] [705]  INFO RPI raspberrypi.cpp:1476 Registered camera /base/soc/i2c0mux/i2c@1/ov5647@36 to Unicam device /dev/media2 and ISP device /dev/media0
+May 24 01:48:15 octopic sh[589]: device/libcamera/device.cc: CAMERA: Device path=/base/soc/i2c0mux/i2c@1/ov5647@36 opened
+May 24 01:48:15 octopic sh[589]: [0:00:20.413811397] [589]  INFO Camera camera.cpp:1028 configuring streams: (0) 1920x1080-YUYV
+May 24 01:48:15 octopic sh[589]: [0:00:20.414694522] [705]  INFO RPI raspberrypi.cpp:851 Sensor: /base/soc/i2c0mux/i2c@1/ov5647@36 - Selected sensor format: 1920x1080-SGBRG10_1X10 - Selected unicam format: 1920x1080-pGAA
+May 24 01:48:15 octopic sh[589]: [0:00:20.418496866] [589]  INFO Camera camera.cpp:1028 configuring streams: (0) 1920x1080-YUYV (1) 1920x1080-SGBRG10_CSI2P
+May 24 01:48:15 octopic sh[589]: [0:00:20.419256345] [705]  INFO RPI raspberrypi.cpp:851 Sensor: /base/soc/i2c0mux/i2c@1/ov5647@36 - Selected sensor format: 1920x1080-SGBRG10_1X10 - Selected unicam format: 1920x1080-pGAA
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: CAMERA:capture: Using: 1920x1080/YUYV, buffers=2, bytesperline=3840, sizeimage=0.0MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: CAMERA:capture: Opened 2 buffers. Memory used: 7.9 MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: CAMERA:capture:1: Using: 1920x1080/GB10, buffers=2, bytesperline=2400, sizeimage=0.0MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: CAMERA:capture:1: Opened 2 buffers. Memory used: 4.9 MiB
+May 24 01:48:15 octopic sh[589]: device/v4l2/device.c: SNAPSHOT: Device path=/dev/video31 fd=37 opened
+May 24 01:48:15 octopic sh[589]: device/v4l2/buffer_list.c: SNAPSHOT:output:mplane: Requested resolution=1920x1080 is unavailable. Got 1920x1088.
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: SNAPSHOT:output:mplane: Using: 1920x1056/YUYV, buffers=2, bytesperline=3840, sizeimage=3.9MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: SNAPSHOT:output:mplane: Opened 2 buffers. Memory used: 0.0 MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: SNAPSHOT:capture:mplane: Using: 1920x1056/JPEG, buffers=2, bytesperline=0, sizeimage=4.0MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: SNAPSHOT:capture:mplane: Opened 2 buffers. Memory used: 8.0 MiB
+May 24 01:48:15 octopic sh[589]: device/v4l2/device.c: RESCALLER:STREAM: Device path=/dev/video12 fd=40 opened
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:output:mplane: Using: 1920x1080/YUYV, buffers=2, bytesperline=3840, sizeimage=4.0MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:output:mplane: Opened 2 buffers. Memory used: 0.0 MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:capture:mplane: Using: 1312x736/YUYV, buffers=2, bytesperline=2624, sizeimage=1.8MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:capture:mplane: Opened 2 buffers. Memory used: 3.7 MiB
+May 24 01:48:15 octopic sh[589]: device/v4l2/device.c: STREAM: Device path=/dev/video31 fd=43 opened
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: STREAM:output:mplane: Using: 1312x736/YUYV, buffers=2, bytesperline=2624, sizeimage=1.8MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: STREAM:output:mplane: Opened 2 buffers. Memory used: 0.0 MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: STREAM:capture:mplane: Using: 1312x736/JPEG, buffers=2, bytesperline=0, sizeimage=4.0MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: STREAM:capture:mplane: Opened 2 buffers. Memory used: 8.0 MiB
+May 24 01:48:15 octopic sh[589]: device/v4l2/device.c: VIDEO: Device path=/dev/video11 fd=46 opened
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: VIDEO:output:mplane: Using: 1312x736/YUYV, buffers=2, bytesperline=2624, sizeimage=1.8MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: VIDEO:output:mplane: Opened 2 buffers. Memory used: 0.0 MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: VIDEO:capture:mplane: Using: 1312x736/H264, buffers=2, bytesperline=0, sizeimage=0.8MiB
+May 24 01:48:15 octopic sh[589]: device/buffer_list.c: VIDEO:capture:mplane: Opened 2 buffers. Memory used: 1.5 MiB
+May 24 01:48:15 octopic sh[589]: device/device.c: CAMERA: Setting frame interval_us=0 for FPS=15
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: SNAPSHOT: Configuring option compressionquality (009d0903) = 80
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: STREAM: Configuring option compressionquality (009d0903) = 80
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option repeatsequenceheader (009909e2) = 1
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option videobitratemode (009909ce) = 0
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option videobitrate (009909cf) = 2000000
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option repeatsequenceheader (009909e2) = 5000000
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option h264iframeperiod (00990a66) = 30
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option h264level (00990a67) = 11
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option h264profile (00990a6b) = 4
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option h264minimumqpvalue (00990a61) = 16
+May 24 01:48:15 octopic sh[589]: device/v4l2/device_options.c: VIDEO: Configuring option h264maximumqpvalue (00990a62) = 32
+May 24 01:48:15 octopic sh[589]: device/links.c: ?: Link 0: CAMERA:capture[1920x1080/YUYV/2] => [SNAPSHOT:output:mplane[1920x1056/YUYV/2], RESCALLER:STREAM:output:mplane[1920x1080/YUYV/2]]
+May 24 01:48:15 octopic sh[589]: device/links.c: ?: Link 1: SNAPSHOT:capture:mplane[1920x1056/JPEG/2] => [SNAPSHOT-CAPTURE]
+May 24 01:48:15 octopic sh[589]: device/links.c: ?: Link 2: RESCALLER:STREAM:capture:mplane[1312x736/YUYV/2] => [STREAM:output:mplane[1312x736/YUYV/2], VIDEO:output:mplane[1312x736/YUYV/2]]
+May 24 01:48:15 octopic sh[589]: device/links.c: ?: Link 3: STREAM:capture:mplane[1312x736/JPEG/2] => [STREAM-CAPTURE]
+May 24 01:48:15 octopic sh[589]: device/links.c: ?: Link 4: VIDEO:capture:mplane[1312x736/H264/2] => [VIDEO-CAPTURE]
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: CAMERA:capture: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: SNAPSHOT:output:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:output:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: SNAPSHOT:capture:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: RESCALLER:STREAM:capture:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: STREAM:output:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: VIDEO:output:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: STREAM:capture:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 01:48:16 octopic sh[589]: device/buffer_list.c: VIDEO:capture:mplane: Streaming started... Was 0 of 2 enqueud
+May 24 12:16:11 octopic sh[589]: util/http/http.c: HTTP8080/2: Client connected 127.0.0.1 (fd=5).
+May 24 12:16:11 octopic sh[589]: util/http/http.c: HTTP8080/2: Request 'GET' '/' ''
+May 24 12:16:11 octopic sh[589]: util/http/http.c: HTTP8080/2: Client disconnected 127.0.0.1.

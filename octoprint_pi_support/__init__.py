@@ -17,11 +17,49 @@ from octoprint.util.platform import CLOSE_FDS
 _PROC_DT_MODEL_PATH = "/proc/device-tree/model"
 _OCTOPI_VERSION_PATH = "/etc/octopi_version"
 _OCTOPIUPTODATE_BUILD_PATH = "/etc/octopiuptodate_build"
+_NEW_CAMERA_STACK_PATH = "/etc/systemd/system/camera-streamer-usb@.service"
 _VCGENCMD_THROTTLE = "/usr/bin/vcgencmd get_throttled"
 _SSHWARN_PATH = "/run/sshwarn"
 
 _CHECK_INTERVAL_OK = 300
 _CHECK_INTERVAL_THROTTLED = 30
+
+
+def _gather_new_camerastack_files():
+    import logging
+
+    files = {}
+
+    try:
+        os.system(
+            "journalctl --boot -u 'camera-streamer*' > /tmp/camerastack-journal.log"
+        )
+        files["camerastack-journal.log"] = "/tmp/camerastack-journal.log"
+    except Exception:
+        logging.getLogger(__name__).exception(
+            "Failed to create camerastack-journal.log file"
+        )
+
+    try:
+        os.system(
+            "/usr/bin/libcamera-hello --list-cameras > /tmp/camerastack-libcamera.log"
+        )
+        files["camerastack-libcamera.log"] = "/tmp/camerastack-libcamera.log"
+    except Exception:
+        logging.getLogger(__name__).exception(
+            "Failed to create camerastack-libcamera.log file"
+        )
+
+    try:
+        os.system("/usr/bin/list-usb-cameras > /tmp/camerastack-usb.log")
+        files["camerastack-usb.log"] = "/tmp/camerastack-usb.log"
+    except Exception:
+        logging.getLogger(__name__).exception(
+            "Failed to create camerastack-usb.log file"
+        )
+
+    return files
+
 
 __LOCAL_DEBUG = os.path.exists(
     os.path.realpath(os.path.join(os.path.dirname(__file__), "..", ".local_debug"))
@@ -43,12 +81,22 @@ if __LOCAL_DEBUG:
     _PROC_DT_MODEL_PATH = os.path.join(base, "fake_model.txt")
     _OCTOPI_VERSION_PATH = os.path.join(base, "fake_octopi.txt")
     _OCTOPIUPTODATE_BUILD_PATH = os.path.join(base, "fake_octopiuptodate.txt")
+    _NEW_CAMERA_STACK_PATH = os.path.join(debug, "new-camera-stack")
     _SSHWARN_PATH = os.path.join(debug, "sshwarn")
+
+    _gather_new_camerastack_files = lambda: {  # noqa: F811
+        "camerastack-journal.log": os.path.join(base, "fake_camerastack_journal.txt"),
+        "camerastack-libcamera.log": os.path.join(
+            base, "fake_camerastack_libcamera.txt"
+        ),
+        "camerastack-usb.log": os.path.join(base, "fake_camerastack_usb.txt"),
+    }
 
     import itertools
 
     _VCGENCMD_OUTPUT = itertools.chain(
-        iter(("0x0", "0x0", "0x50005", "0x50000", "0x70007")), itertools.repeat("0x70005")
+        iter(("0x0", "0x0", "0x50005", "0x50000", "0x70007")),
+        itertools.repeat("0x70005"),
     )
     _VCGENCMD_BROKEN = os.path.exists(os.path.join(debug, "vcgencmd_broken"))
 
@@ -79,7 +127,8 @@ class ThrottleState:
             "throttled": _FLAG_THROTTLED & value == _FLAG_THROTTLED,
             "past_undervoltage": _FLAG_PAST_UNDERVOLTAGE & value
             == _FLAG_PAST_UNDERVOLTAGE,
-            "past_freq_capped": _FLAG_PAST_FREQ_CAPPED & value == _FLAG_PAST_FREQ_CAPPED,
+            "past_freq_capped": _FLAG_PAST_FREQ_CAPPED & value
+            == _FLAG_PAST_FREQ_CAPPED,
             "past_throttled": _FLAG_PAST_THROTTLED & value == _FLAG_PAST_THROTTLED,
             "raw_value": value,
         }
@@ -196,7 +245,9 @@ def get_vcgencmd_throttled_state(command):
         output, error = sarge.get_both(command, close_fds=CLOSE_FDS)
 
     if "throttled=0x" not in output:
-        raise ValueError(f"Cannot parse {command!r} output: {error if error else output}")
+        raise ValueError(
+            f"Cannot parse {command!r} output: {error if error else output}"
+        )
 
     value = output[len("throttled=") :].strip(" \t\r\n\0")
     value = int(value, 0)
@@ -209,6 +260,10 @@ def is_octopi():
 
 def is_octopiuptodate():
     return os.path.exists(_OCTOPIUPTODATE_BUILD_PATH)
+
+
+def is_new_camerastack():
+    return os.path.exists(_NEW_CAMERA_STACK_PATH)
 
 
 def is_model_any_of(model, *args):
@@ -301,10 +356,20 @@ class PiSupportPlugin(
 
     def get_additional_bundle_files(self, *args, **kwargs):
         if is_octopi():
-            return {
-                "webcamd.log": "/var/log/webcamd.log",
+            result = {
                 "haproxy.log": "/var/log/haproxy.log",
             }
+
+            if is_new_camerastack():
+                # new camera-streamer based camera stack
+                files = _gather_new_camerastack_files()
+                result.update(**files)
+
+            else:
+                # old mjpg-streamer based camera stack
+                result["webcamd.log"] = "/var/log/webcamd.log"
+
+            return result
         else:
             return {}
 

@@ -1,0 +1,2 @@
+Available USB camera devices:
+  /dev/v4l/by-id/usb-*-video-index0
