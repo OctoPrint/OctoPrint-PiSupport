@@ -171,15 +171,30 @@ $(function () {
                 $("#pi_support_footer").remove();
                 if (!response.octopi_version) return;
 
-                var octoPiVersion = $(
-                    "<li id='pi_support_footer'><small>" +
-                        gettext("OctoPi") +
-                        " " +
-                        "<span class='octopi_version'>" +
-                        response.octopi_version +
-                        "</span></small></li>"
-                );
-                $("#footer_version").append(octoPiVersion);
+                if (response.octopiuptodate_build_short) {
+                    var octoPiVersion = $(
+                        "<li id='pi_support_footer'><small>" +
+                            gettext("OctoPi") +
+                            "* " +
+                            "<span class='octopi_version'>" +
+                            response.octopi_version +
+                            " (build " +
+                            response.octopiuptodate_build_short +
+                            ")" +
+                            "</span></small></li>"
+                    );
+                    $("#footer_version").append(octoPiVersion);
+                } else {
+                    var octoPiVersion = $(
+                        "<li id='pi_support_footer'><small>" +
+                            gettext("OctoPi") +
+                            " " +
+                            "<span class='octopi_version'>" +
+                            response.octopi_version +
+                            "</span></small></li>"
+                    );
+                    $("#footer_version").append(octoPiVersion);
+                }
             });
         };
 

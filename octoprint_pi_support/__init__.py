@@ -382,6 +382,14 @@ class PiSupportPlugin(
 
         if is_octopiuptodate():
             result["octopiuptodate_build"] = get_octopiuptodate_build()
+            try:
+                build = result["octopiuptodate_build"].split("-")[-1]
+
+                result["octopiuptodate_build_short"] = (
+                    build[0:4] + "." + build[4:6] + "." + build[6:8] + "." + build[8:]
+                )
+            except Exception:
+                pass
 
         return result
 
@@ -426,7 +434,15 @@ class PiSupportPlugin(
             }
         ]
 
-        if is_octopi():
+        if is_octopiuptodate():
+            configs.append(
+                {
+                    "type": "about",
+                    "name": "About OctoPi",
+                    "template": "pi_support_about_octopiuptodate.jinja2",
+                }
+            )
+        elif is_octopi():
             configs.append(
                 {
                     "type": "about",

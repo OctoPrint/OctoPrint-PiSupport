@@ -1,0 +1,35 @@
+<h3>{{ _('About OctoPi-UpToDate') }}</h3>
+
+<h4>The up-to-date version of OctoPi</h4>
+
+<p>Build <span class="plugin_pi_support_octopiuptodate_build">{{ plugin_pi_support_octopiuptodate_build_short }}</span>, based on OctoPi {{ plugin_pi_support_octopi_version }}, running on <span class="plugin_pi_support_model">{{ plugin_pi_support_model }}</span></p>
+
+<ul class="fa-ul">
+    <li><i class="fa-li fas fa-home"></i> Website: <a href="https://octoprint.org/download/" target="_blank" rel="noreferrer noopener">octoprint.org/download</a></li>
+    <li><i class="fa-li fab fa-github"></i> Source Code: <a href="https://github.com/OctoPrint/OctoPi-UpToDate" target="_blank" rel="noreferrer noopener">github.com/OctoPrint/OctoPi-UpToDate</a></li>
+    <li><i class="fa-li fas fa-code-branch"></i> Changelog: <a href="https://github.com/OctoPrint/OctoPi-UpToDate/releases/tag/{{ plugin_pi_support_octopiuptodate_build }}" target="_blank" rel="noreferrer noopener">github.com/OctoPrint/OctoPrint/releases/tag/{{ plugin_pi_support_octopiuptodate_build }}</a></li>
+    <li><i class="fa-li fas fa-heart"></i> Financial Support: <a href="https://support.octoprint.org" target="_blank" rel="noreferrer noopener">support.octoprint.org</a></li>
+</ul>
+
+<p>
+    &copy; 2013-{{ now.strftime("%Y") }} <a href="https://github.com/OctoPrint/OctoPi-UpToDate/graphs/contributors" target="_blank" rel="noreferrer noopener">The OctoPi-UpToDate Authors</a>
+</p>
+
+<p>
+    OctoPi-UpToDate is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+</p>
+<p>
+    OctoPi-UpToDate is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+</p>
+<p>
+    For a copy of the GNU General Public License, see
+    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noreferrer noopener">www.gnu.org/licenses/gpl-3.0.en.html</a>.
+</p>
+
+{% include "pi_support_about_octopi.jinja2" %}
