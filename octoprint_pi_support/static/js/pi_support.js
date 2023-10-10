@@ -172,12 +172,15 @@ $(function () {
                 if (!response.octopi_version) return;
 
                 if (response.octopiuptodate_build_short) {
+                    let cam_suffix =
+                        response.octopi_camera_stack == "camera-streamer" ? "cam" : "";
                     var octoPiVersion = $(
                         "<li id='pi_support_footer'><small>" +
                             gettext("OctoPi") +
                             "* " +
                             "<span class='octopi_version'>" +
                             response.octopi_version +
+                            cam_suffix +
                             " (build " +
                             response.octopiuptodate_build_short +
                             ")" +

@@ -379,6 +379,9 @@ class PiSupportPlugin(
 
         if is_octopi():
             result["octopi_version"] = get_octopi_version()
+            result["octopi_camera_stack"] = (
+                "camera-streamer" if is_new_camerastack() else "webcamd"
+            )
 
         if is_octopiuptodate():
             result["octopiuptodate_build"] = get_octopiuptodate_build()
