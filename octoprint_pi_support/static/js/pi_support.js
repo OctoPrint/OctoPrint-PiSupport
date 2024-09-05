@@ -2,6 +2,59 @@ $(function () {
     function PiSupportViewModel(parameters) {
         var self = this;
 
+        const UNDERVOLTAGE_TITLE = gettext("Undervoltage detected");
+        const UNDERVOLTAGE_WARNING = gettext(
+            "Your Raspberry Pi is reporting insufficient power. " +
+                "Switch to an adequate power supply or risk bad " +
+                "performance and failed prints."
+        );
+        const UNDERVOLTAGE_FAQ = "https://faq.octoprint.org/pi-issues";
+
+        const ZERO_TITLE = gettext("Unsupported hardware detected");
+        const ZERO_WARNING = gettext(
+            "OctoPrint does not and never has supported the " +
+                "RPi Zero or Zero W. Use at least a Raspberry Pi 3 or Zero 2, or " +
+                "risk bad performance and failed prints."
+        );
+        const ZERO_DISABLE = gettext(
+            "You can disable this message via Settings > " +
+                "Pi Support > Disable warning about unsupported hardware"
+        );
+        const ZERO_FAQ = "https://faq.octoprint.org/recommended-hardware";
+
+        const PASSWORD_TITLE = gettext("Default system password not changed");
+        const PASSWORD_WARNING = gettext(
+            'The default password for the system user "pi" has not ' +
+                "been changed. This is a security risk - please login to " +
+                "your Pi via SSH and change the password."
+        );
+        const PASSWORD_DISABLE = gettext(
+            "You can disable this message via Settings > " +
+                "Pi Support > Disable warning about default system password"
+        );
+        const PASSWORD_FAQ = "https://faq.octoprint.org/pi-default-password";
+
+        const FAQ = gettext(
+            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
+        );
+
+        const generateHtml = (warning, faq, disable) => {
+            const html =
+                "<p>" +
+                warning +
+                "</p><p>" +
+                _.sprintf(FAQ, {
+                    url: faq
+                }) +
+                "</p>";
+
+            if (disable) {
+                return html + "<p><small>" + disable + "</small></p>";
+            } else {
+                return html;
+            }
+        };
+
         self.loginState = parameters[0];
         self.access = parameters[1];
         self.settings = parameters[2];
@@ -35,34 +88,10 @@ $(function () {
                     response.model_unrecommended &&
                     !self.settings.settings.plugins.pi_support.ignore_unrecommended_model()
                 ) {
-                    var warning = gettext(
-                        "OctoPrint does not and never has supported the " +
-                            "RPi Zero or Zero W. Use at least a Raspberry Pi 3 or Zero 2, or " +
-                            "risk bad performance and failed prints."
-                    );
-                    var faq = gettext(
-                        "" +
-                            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
-                    );
-                    var remove = gettext(
-                        "You can disable this message via Settings > " +
-                            "Pi Support > Disable warning about unsupported hardware"
-                    );
-
                     if (self.notifications.unrecommended === undefined) {
                         self.notifications.unrecommended = new PNotify({
-                            title: gettext("Unsupported hardware detected"),
-                            text:
-                                "<p>" +
-                                warning +
-                                "</p><p>" +
-                                _.sprintf(faq, {
-                                    url: "https://faq.octoprint.org/recommended-hardware"
-                                }) +
-                                "</p><p>" +
-                                "<small>" +
-                                remove +
-                                "</small></p>",
+                            title: ZERO_TITLE,
+                            text: generateHtml(ZERO_WARNING, ZERO_FAQ, ZERO_DISABLE),
                             type: "error",
                             hide: false
                         });
@@ -96,27 +125,10 @@ $(function () {
                 // Throttle state
                 self.fromThrottleState(response.throttle_state);
                 if (self.currentUndervoltage() || self.pastUndervoltage()) {
-                    var warning = gettext(
-                        "Your Raspberry Pi is reporting insufficient power. " +
-                            "Switch to an adequate power supply or risk bad " +
-                            "performance and failed prints."
-                    );
-                    var faq = gettext(
-                        "" +
-                            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
-                    );
-
                     if (self.notifications.throttled === undefined) {
                         self.notifications.throttled = new PNotify({
-                            title: gettext("Undervoltage detected"),
-                            text:
-                                "<p>" +
-                                warning +
-                                "</p><p>" +
-                                _.sprintf(faq, {
-                                    url: "https://faq.octoprint.org/pi-issues"
-                                }) +
-                                "</p>",
+                            title: UNDERVOLTAGE_TITLE,
+                            text: generateHtml(UNDERVOLTAGE_WARNING, UNDERVOLTAGE_FAQ),
                             type: "error",
                             hide: false
                         });
@@ -131,34 +143,14 @@ $(function () {
                     response.default_password &&
                     !self.settings.settings.plugins.pi_support.ignore_default_password()
                 ) {
-                    var warning = gettext(
-                        'The default password for the system user "pi" has not ' +
-                            "been changed. This is a security risk - please login to " +
-                            "your Pi via SSH and change the password."
-                    );
-                    var faq = gettext(
-                        "" +
-                            'You can read more <a href="%(url)s" target="_blank">in the FAQ</a>.'
-                    );
-                    var remove = gettext(
-                        "You can disable this message via Settings > " +
-                            "Pi Support > Disable warning about default system password"
-                    );
-
                     if (self.notifications.default_password === undefined) {
                         self.notifications.default_password = new PNotify({
-                            title: gettext("Default system password not changed"),
-                            text:
-                                "<p>" +
-                                warning +
-                                "</p><p>" +
-                                _.sprintf(faq, {
-                                    url: "https://faq.octoprint.org/pi-default-password"
-                                }) +
-                                "</p><p>" +
-                                "<small>" +
-                                remove +
-                                "</small></p>",
+                            title: PASSWORD_TITLE,
+                            text: generateHtml(
+                                PASSWORD_WARNING,
+                                PASSWORD_FAQ,
+                                PASSWORD_DISABLE
+                            ),
                             hide: false
                         });
                     }
@@ -325,6 +317,32 @@ $(function () {
                 });
                 return false;
             }
+        };
+
+        self.getAdditionalHealthCheckHandlers = function () {
+            return {
+                pi_undervoltage: (result, context) => {
+                    return {
+                        title: UNDERVOLTAGE_TITLE,
+                        html: generateHtml(UNDERVOLTAGE_WARNING, UNDERVOLTAGE_FAQ),
+                        result: result
+                    };
+                },
+                pi_unsupported: (result, context) => {
+                    return {
+                        title: ZERO_TITLE,
+                        html: generateHtml(ZERO_WARNING, ZERO_FAQ),
+                        result: result
+                    };
+                },
+                pi_default_password: (result, context) => {
+                    return {
+                        title: PASSWORD_TITLE,
+                        html: generateHtml(PASSWORD_WARNING, PASSWORD_FAQ),
+                        result: result
+                    };
+                }
+            };
         };
     }
 
