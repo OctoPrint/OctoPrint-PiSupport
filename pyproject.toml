@@ -12,7 +12,8 @@ description = "Provides additional information about your Pi in the UI"
 authors = [
     { name = "Gina Häußge", email = "gina@octoprint.org" },
 ]
-license = "AGPL-3.0-or-later"
+license = {text = "AGPL-3.0-or-later"}
+license-files = ["LICENSE"]
 requires-python = ">=3.7,<4"
 dependencies = []
 
