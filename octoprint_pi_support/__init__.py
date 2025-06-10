@@ -261,7 +261,7 @@ def is_new_camerastack():
 
 def is_model_any_of(model, *args):
     model = model.lower()
-    for arg in map(lambda x: x.lower(), args):
+    for arg in (x.lower() for x in args):
         if f"{arg} rev" in model or model.endswith(arg):
             return True
     return False
@@ -496,21 +496,21 @@ class PiSupportPlugin(
     ##~~ Softwareupdate hook
 
     def get_update_information(self):
-        return dict(
-            pi_support=dict(
-                displayName="Pi Support Plugin",
-                displayVersion=self._plugin_version,
+        return {
+            "pi_support": {
+                "displayName": "Pi Support Plugin",
+                "displayVersion": self._plugin_version,
                 # version check: github repository
-                type="github_release",
-                user="OctoPrint",
-                repo="OctoPrint-PiSupport",
-                current=self._plugin_version,
-                stable_branch={
+                "type": "github_release",
+                "user": "OctoPrint",
+                "repo": "OctoPrint-PiSupport",
+                "current": self._plugin_version,
+                "stable_branch": {
                     "name": "Stable",
                     "branch": "main",
                     "commitish": ["devel", "main"],
                 },
-                prerelease_branches=[
+                "prerelease_branches": [
                     {
                         "name": "Prerelease",
                         "branch": "devel",
@@ -518,9 +518,9 @@ class PiSupportPlugin(
                     }
                 ],
                 # update method: pip
-                pip="https://github.com/OctoPrint/OctoPrint-PiSupport/archive/{target_version}.zip",
-            )
-        )
+                "pip": "https://github.com/OctoPrint/OctoPrint-PiSupport/archive/{target_version}.zip",
+            }
+        }
 
     # ~~ Helpers
 

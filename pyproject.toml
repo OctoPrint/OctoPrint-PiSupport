@@ -1,0 +1,119 @@
+[build-system]
+requires = [
+    "setuptools>=67",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OctoPrint-PiSupport"
+version = "2023.10.10"
+description = "Provides additional information about your Pi in the UI"
+authors = [
+    { name = "Gina Häußge", email = "gina@octoprint.org" },
+]
+license = "AGPL-3.0-or-later"
+requires-python = ">=3.7,<4"
+dependencies = []
+
+[project.entry-points."octoprint.plugin"]
+pi_support = "octoprint_pi_support"
+
+[project.urls]
+Homepage = "https://github.com/OctoPrint/OctoPrint-PiSupport"
+
+[project.optional-dependencies]
+develop = [
+    "go-task-bin",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "markdown"
+
+[tool.setuptools]
+include-package-data = true
+packages = [
+    "octoprint_pi_support",
+]
+
+[tool.ruff]
+exclude = [
+    # standard stuff
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+line-length = 90
+indent-width = 4
+
+# Assume Python 3.7
+target-version = "py37"
+
+[tool.ruff.lint]
+select = ["B", "C", "E", "F", "I", "W", "B9"]
+ignore = [
+    "E203",
+    "E231",
+    "E265",
+    "E266",
+    "E402",
+    "E501",
+    "E731",
+    "E741",
+    "W605",
+    "C901",
+]
+fixable = ["I", "C4", "E"]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "octoprint_file_check",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = false
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
