@@ -24,6 +24,10 @@ Homepage = "https://github.com/OctoPrint/OctoPrint-PiSupport"
 
 [project.optional-dependencies]
 develop = [
+    "pytest",
+    "ddt",
+    "mock",
+    "pre-commit",
     "go-task-bin",
 ]
 
