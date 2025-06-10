@@ -366,6 +366,20 @@ class PiSupportPlugin(
         else:
             return {}
 
+    ##~~ Additional health checks hook
+
+    def get_additional_health_checks(self):
+        from .health_checks import all_checks
+
+        def health_check_factory(clz):
+            def factory(settings):
+                return clz(self, settings)
+
+            factory.key = clz.key
+            return factory
+
+        return [health_check_factory(clz) for clz in all_checks]
+
     # ~~ EnvironmentDetectionPlugin
 
     def get_additional_environment(self):
@@ -605,6 +619,11 @@ class PiSupportPlugin(
             self._throttle_state.as_dict(),
         )
 
+        if hasattr(octoprint.events.Events, "PLUGIN_HEALTH_CHECK_UPDATE_HEALTHCHECK"):
+            self._event_bus.fire(
+                octoprint.events.Events.PLUGIN_HEALTH_CHECK_UPDATE_HEALTHCHECK
+            )
+
 
 def register_custom_events(*args, **kwargs):
     return [
@@ -646,6 +665,7 @@ def __plugin_load__():
         "octoprint.events.register_custom_events": register_custom_events,
         "octoprint.access.permissions": __plugin_implementation__.get_additional_permissions,
         "octoprint.systeminfo.additional_bundle_files": __plugin_implementation__.get_additional_bundle_files,
+        "octoprint.plugin.health_check.get_additional_checks": __plugin_implementation__.get_additional_health_checks,
     }
 
     global __plugin_helpers__
