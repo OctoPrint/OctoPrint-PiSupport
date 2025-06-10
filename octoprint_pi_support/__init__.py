@@ -416,6 +416,9 @@ class PiSupportPlugin(
         )
         return flask.jsonify(**result)
 
+    def is_api_protected(self):
+        return True
+
     # ~~ AssetPlugin
 
     def get_assets(self):
