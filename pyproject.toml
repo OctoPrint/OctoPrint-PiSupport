@@ -1,19 +1,17 @@
 [build-system]
 requires = [
     "setuptools>=67",
-    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "OctoPrint-PiSupport"
 version = "2023.10.10"
+dynamic = ["license"]
 description = "Provides additional information about your Pi in the UI"
 authors = [
     { name = "Gina Häußge", email = "gina@octoprint.org" },
 ]
-license = {text = "AGPL-3.0-or-later"}
-license-files = ["LICENSE"]
 requires-python = ">=3.7,<4"
 dependencies = []
 
@@ -38,9 +36,9 @@ content-type = "markdown"
 
 [tool.setuptools]
 include-package-data = true
-packages = [
-    "octoprint_pi_support",
-]
+
+[tool.setuptools.packages.find]
+include = ["octoprint_pi_support", "octoprint_pi_support.*"]
 
 [tool.ruff]
 exclude = [
