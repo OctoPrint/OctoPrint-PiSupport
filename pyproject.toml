@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OctoPrint-PiSupport"
-version = "2025.7.22"
+version = "2025.7.23"
 dynamic = ["license"]
 description = "Provides additional information about your Pi in the UI"
 authors = [
