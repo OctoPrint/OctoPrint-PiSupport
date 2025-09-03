@@ -17,7 +17,7 @@ considered a bundled plugin.
 The plugin is part of the core dependencies of OctoPrint 1.6.0+ and will be installed automatically alongside it.
 
 In case you want to manually install it into an older version for whatever reason, install via the bundled
-[Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html)
+[Plugin Manager](https://docs.octoprint.org/en/main/bundledplugins/pluginmanager.html)
 or manually using this URL:
 
     https://github.com/OctoPrint/OctoPrint-PiSupport/archive/main.zip
