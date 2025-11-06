@@ -58,6 +58,7 @@ jobs:
       - name: 🚀 Run test suite
         run: |
           pytest | tee report.txt
+          pytest_exit=${PIPESTATUS[0]}
 
           # generate summary
           python=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
@@ -79,6 +80,9 @@ jobs:
 
           </details>
           EOF
+
+          # make sure we fail if pytest fails!
+          exit $pytest_exit
 
   test-install:
     name: 🧪 Installation test
