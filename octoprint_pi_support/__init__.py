@@ -484,7 +484,7 @@ class PiSupportPlugin(
             self._throttle_check = RepeatedTimer(
                 self._check_throttled_state_interval,
                 self._check_throttled_state,
-                condition=self._check_throttled_state_condition,
+                condition = self._check_throttled_state_condition,
             )
             self._throttle_check.start()
 
