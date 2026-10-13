@@ -2,13 +2,13 @@ __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agp
 __copyright__ = "Copyright (C) 2017 The OctoPrint Project - Released under terms of the AGPLv3 License"
 
 import os
+import subprocess
 from getpass import getuser
 
 import flask
 import octoprint.events
 import octoprint.plugin
 import sarge
-import subprocess
 from flask_babel import gettext
 from octoprint.access.groups import USER_GROUP
 from octoprint.access.permissions import Permissions
