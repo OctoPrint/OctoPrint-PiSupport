@@ -124,6 +124,8 @@ jobs:
             python: "3.7"
           - octoprint: "dev"
             python: "3.8"
+          - octoprint: "dev"
+            python: "3.9"
     steps:
       - name: ⬇ Download build result
         uses: actions/download-artifact@v4
