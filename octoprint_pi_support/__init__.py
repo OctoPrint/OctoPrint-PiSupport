@@ -645,7 +645,7 @@ __plugin_disabling_discouraged__ = gettext(
     "which will make it more tricky to help you if you need support."
 )
 __plugin_license__ = "AGPLv3"
-__plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_pythoncompat__ = ">=3.7,<4"
 
 
 def __plugin_check__():
