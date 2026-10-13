@@ -28,6 +28,9 @@ if checks is not None:
         def perform_check(self, force=False):
             state = self._plugin.get_throttle_state()
 
+            if not state:
+                return
+
             if state["current_undervoltage"]:
                 return checks.CheckResult(result=checks.Result.ISSUE, context=state)
             elif state["past_undervoltage"]:

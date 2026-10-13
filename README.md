@@ -57,3 +57,6 @@ Access to `get_throttle_state`, to retrieve the current throttle state. Returns 
 with the same fields as the `PLUGIN_PI_SUPPORT_THROTTLE_STATE` event payload. By setting
 the keyword argument `run_now` set to `True`, the throttle state will be refreshed before
 returning.
+
+May return ``False`` if throttle/overheat checking has been disabled by the user (putting tape
+on the "check engine" light is not recommended).
