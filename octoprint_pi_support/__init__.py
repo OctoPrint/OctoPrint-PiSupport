@@ -8,6 +8,7 @@ import flask
 import octoprint.events
 import octoprint.plugin
 import sarge
+import subprocess
 from flask_babel import gettext
 from octoprint.access.groups import USER_GROUP
 from octoprint.access.permissions import Permissions
@@ -31,9 +32,10 @@ def _gather_new_camerastack_files():
     files = {}
 
     try:
-        os.system(
-            "journalctl --boot -u 'camera-streamer*' > /tmp/camerastack-journal.log"
-        )
+        subprocess.call(
+            "journalctl --boot -u 'camera-streamer*' > /tmp/camerastack-journal.log",
+            shell=True,
+        )  # shell=True intentional here, command line hard coded
         files["camerastack-journal.log"] = "/tmp/camerastack-journal.log"
     except Exception:
         logging.getLogger(__name__).exception(
@@ -41,9 +43,10 @@ def _gather_new_camerastack_files():
         )
 
     try:
-        os.system(
-            "/usr/bin/libcamera-hello --list-cameras > /tmp/camerastack-libcamera.log"
-        )
+        subprocess.call(
+            "/usr/bin/libcamera-hello --list-cameras > /tmp/camerastack-libcamera.log",
+            shell=True,
+        )  # shell=True intentional here, command line hard coded
         files["camerastack-libcamera.log"] = "/tmp/camerastack-libcamera.log"
     except Exception:
         logging.getLogger(__name__).exception(
@@ -51,7 +54,9 @@ def _gather_new_camerastack_files():
         )
 
     try:
-        os.system("/usr/bin/list-usb-cameras > /tmp/camerastack-usb.log")
+        subprocess.call(
+            "/usr/bin/list-usb-cameras > /tmp/camerastack-usb.log", shell=True
+        )  # shell=True intentional here, command line hard coded
         files["camerastack-usb.log"] = "/tmp/camerastack-usb.log"
     except Exception:
         logging.getLogger(__name__).exception("Failed to create camerastack-usb.log file")
