@@ -20,6 +20,7 @@ _OCTOPI_VERSION_PATH = "/etc/octopi_version"
 _OCTOPIUPTODATE_BUILD_PATH = "/etc/octopiuptodate_build"
 _NEW_CAMERA_STACK_PATH = "/etc/systemd/system/camera-streamer-usb@.service"
 _VCGENCMD_THROTTLE = "/usr/bin/vcgencmd get_throttled"
+_RASPBERRYPI_HWMON_PATH = "/sys/devices/platform/soc/soc:firmware/raspberrypi-hwmon/hwmon/hwmon1/in0_lcrit_alarm"
 _SSHWARN_PATH = "/run/sshwarn"
 
 _CHECK_INTERVAL_OK = 300
@@ -101,8 +102,12 @@ if __LOCAL_DEBUG:
     )
     _VCGENCMD_BROKEN = os.path.exists(os.path.join(debug, "vcgencmd_broken"))
 
+    _RASPBERRYPI_HWMON_OUTPUT = "0"
+    _RASPBERRYPI_HWMON_BROKEN = os.path.exists(os.path.join(debug, "raspberrypi_hwmon_broken"))
+
     _CHECK_INTERVAL_OK = 10
     _CHECK_INTERVAL_THROTTLED = 5
+    _CHECK_INTERVAL_UNDERVOLT = 5
 
 
 # see https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=147781&start=50#p972790
@@ -252,6 +257,27 @@ def get_vcgencmd_throttled_state(command):
     return ThrottleState.from_value(value)
 
 
+def get_raspberrypi_hwmon_undervolt_state(path):
+    if __LOCAL_DEBUG:
+        if _RASPBERRYPI_HWMON_BROKEN:
+            output = ""
+            error = "raspberrypi-hwmon failed"
+        else:
+            output = "undervolt={}".format(
+                next(_RASPBERRYPI_HWMON_OUTPUT)
+            )  # mock for local debugging
+            error = ""
+    else:
+        with open(path, encoding="utf-8") as f:
+            output = f.readline().strip(" \t\r\n\0")
+
+    if output is not "0" or output is not "1":
+        raise ValueError(f"Cannot parse {path!r} value: {error if error else output}")
+
+    value = int(value, 0)
+    return ThrottleState.from_value(value)
+
+
 def is_octopi():
     return os.path.exists(_OCTOPI_VERSION_PATH)
 
@@ -325,6 +351,8 @@ class PiSupportPlugin(
         self._throttle_overheat = False
         self._throttle_check_enabled = True
         self._throttle_check_functional = True
+        self._undervolt_check_enabled = True
+        self._undervolt_check_functional = True
 
     def initialize(self):
         self._throttle_check_enabled = self._settings.get_boolean(
@@ -333,6 +361,14 @@ class PiSupportPlugin(
         if not self._throttle_check_enabled:
             self._logger.warning(
                 "Throttle check via vcgencmd disabled by user. Potential undervoltage or overheating issues will not be detected."
+            )
+
+        self._undervolt_check_enabled = self._settings.get_boolean(
+            ["raspberrypi_hwmon_check_enabled"]
+        )
+        if not self._undervolt_check_enabled:
+            self._logger.warning(
+                "Undervolt check via raspberrypi-hwmon disabled by user. Potential undervoltage issues will not be detected."
             )
 
     # Additional permissions hook
@@ -396,6 +432,12 @@ class PiSupportPlugin(
         if self._throttle_check_enabled and self._throttle_check_functional:
             result["throttle_state"] = self._throttle_state.raw_value_hex
 
+        self._check_undervolt_state()
+        result["undervolt_check_enabled"] = self._undervolt_check_enabled
+        result["undervolt_check_functional"] = self._undervolt_check_functional
+        if self._undervolt_check_enabled and self._undervolt_check_functional:
+            result["undervolt_state"] = self._undervolt_state.raw_value_hex
+
         if is_octopi():
             result["octopi_version"] = get_octopi_version()
             result["octopi_camera_stack"] = (
@@ -427,6 +469,9 @@ class PiSupportPlugin(
                 "throttle_enabled": self._throttle_check_enabled,
                 "throttle_functional": self._throttle_check_functional,
                 "throttle_state": self._throttle_state.as_dict(),
+                "undervolt_enabled": self._undervolt_check_enabled,
+                "undervolt_functional": self._undervolt_check_functional,
+                "undervolt_state": self._undervolt_state.as_dict(),
                 "model_unrecommended": is_model_any_of(
                     result.get("model"), *_UNRECOMMENDED_MODELS
                 ),
@@ -489,9 +534,19 @@ class PiSupportPlugin(
             self._throttle_check = RepeatedTimer(
                 self._check_throttled_state_interval,
                 self._check_throttled_state,
-                condition=self._check_throttled_state_condition,
+                condition = self._check_throttled_state_condition,
             )
             self._throttle_check.start()
+
+        if self._settings.get_boolean(["raspberrypi_hwmon_undervolt_check_enabled"]):
+            self._check_undervolt_state()
+            self._undervolt_check = RepeatedTimer(
+                self._check_undervolt_state_interval,
+                self._check_undervolt_state,
+                condition = self._check_undervolt_state_condition,
+            )
+            self._undervolt_check.start()
+
 
     # ~~ SettingsPlugin
 
@@ -499,6 +554,8 @@ class PiSupportPlugin(
         return {
             "vcgencmd_throttle_check_enabled": True,
             "vcgencmd_throttle_check_command": _VCGENCMD_THROTTLE,
+            "raspberrypi_hwmon_undervolt_check_enabled": True,
+            "raspberrypi_hwmon_undervolt_check_path": _RASPBERRYPI_HWMON_PATH,
             "ignore_unrecommended_model": False,
             "ignore_undervoltage_on_printstart": False,
             "ignore_default_password": False,
@@ -509,6 +566,8 @@ class PiSupportPlugin(
             "admin": [
                 ["vcgencmd_throttle_check_enabled"],
                 ["vcgencmd_throttle_check_command"],
+                ["raspberrypi_hwmon_undervolt_check_enabled"],
+                ["raspberrypi_hwmon_undervolt_check_path"],
             ]
         }
 
@@ -629,12 +688,89 @@ class PiSupportPlugin(
                 octoprint.events.Events.PLUGIN_HEALTH_CHECK_UPDATE_HEALTHCHECK
             )
 
+    def _check_undervolt_state_interval(self):
+        if self._undervolt_state.current_issue:
+            return _CHECK_INTERVAL_UNDERVOLT
+        else:
+            return _CHECK_INTERVAL_OK
+
+    def _check_undervolt_state_condition(self):
+        return self._undervolt_check_enabled and self._undervolt_check_functional
+
+    def get_undervolt_state(self, run_now=False):
+        """Exposed as public helper."""
+        if run_now:
+            self._check_undervolt_state()
+
+        if not self._undervolt_check_enabled or not self._undervolt_check_functional:
+            return False
+
+        return self._undervolt_state.as_dict()
+
+    def _check_undervolt_state(self):
+        if not self._undervolt_check_enabled:
+            return
+
+        path = self._settings.get(["raspberrypi_hwmon_undervolt_check_path"])
+
+        self._logger.debug(f"Retrieving undervolt state via {path!r}")
+        try:
+            state = get_raspberrypi_hwmon_undervolt_state(path)
+        except ValueError as ex:
+            error = str(ex)
+            self._logger.warning(error)
+            if "raspberrypi-hwmon failed" in error:
+                self._logger.warning(
+                    'Make sure the system user "{}" ...'.format(
+                        getuser()
+                    )
+                )
+            self._undervolt_check_functional = False
+            return
+
+        if self._undervolt_state == state:
+            # no change
+            return
+
+        self._undervolt_state = state
+
+        if (not self._undervolt_undervoltage and self._undervolt_state.undervoltage):
+            message = (
+                "This Raspberry Pi is reporting problems that might lead to bad performance or errors caused "
+                "by insufficient power."
+            )
+
+            if self._undervolt_state.undervoltage:
+                self._undervolt_undervoltage = True
+                message += (
+                    "\n!!! UNDERVOLTAGE REPORTED !!! Make sure that the power supply and power cable are "
+                    "capable of supplying enough voltage and current to your Pi."
+                )
+
+            self._logger.warning(message)
+
+        self._plugin_manager.send_plugin_message(
+            self._identifier,
+            {"type": "undervolt_state", "state": self._undervolt_state.as_dict()},
+        )
+
+        # noinspection PyUnresolvedReferences
+        self._event_bus.fire(
+            octoprint.events.Events.PLUGIN_PI_SUPPORT_UNDERVOLT_STATE,
+            self._undervolt_state.as_dict(),
+        )
+
+        if hasattr(octoprint.events.Events, "PLUGIN_HEALTH_CHECK_UPDATE_HEALTHCHECK"):
+            self._event_bus.fire(
+                octoprint.events.Events.PLUGIN_HEALTH_CHECK_UPDATE_HEALTHCHECK
+            )
+
 
 def register_custom_events(*args, **kwargs):
     return [
         "throttle_state",
+        "undervolt_state",
     ]
-
 
 __plugin_name__ = "Pi Support Plugin"
 __plugin_author__ = "Gina Häußge"
@@ -675,3 +811,4 @@ def __plugin_load__():
 
     global __plugin_helpers__
     __plugin_helpers__ = {"get_throttled": plugin.get_throttle_state}
+    __plugin_helpers__ = {"get_undervolt": plugin.get_undervolt_state}
