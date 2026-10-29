@@ -1,9 +1,9 @@
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = "Copyright (C) 2017 The OctoPrint Project - Released under terms of the AGPLv3 License"
 
+import logging
 import os
 import subprocess
-from getpass import getuser
 
 import flask
 import octoprint.events
@@ -19,11 +19,15 @@ _PROC_DT_MODEL_PATH = "/proc/device-tree/model"
 _OCTOPI_VERSION_PATH = "/etc/octopi_version"
 _OCTOPIUPTODATE_BUILD_PATH = "/etc/octopiuptodate_build"
 _NEW_CAMERA_STACK_PATH = "/etc/systemd/system/camera-streamer-usb@.service"
-_VCGENCMD_THROTTLE = "/usr/bin/vcgencmd get_throttled"
+_VCGENCMD_PATH = "/usr/bin/vcgencmd"
+_RASPBERRYPI_HWMON_UEVENT_NAME = "in0_lcrit_alarm"
+_RASPBERRYPI_HWMON_PATH = "/sys/devices/platform/soc/soc:firmware/raspberrypi-hwmon/hwmon/hwmon1/in0_lcrit_alarm"
 _SSHWARN_PATH = "/run/sshwarn"
 
 _CHECK_INTERVAL_OK = 300
 _CHECK_INTERVAL_THROTTLED = 30
+
+_LOGGING_PREFIX = "octoprint.plugins.pi_support"
 
 
 def _gather_new_camerastack_files():
@@ -100,6 +104,9 @@ if __LOCAL_DEBUG:
         itertools.repeat("0x70005"),
     )
     _VCGENCMD_BROKEN = os.path.exists(os.path.join(debug, "vcgencmd_broken"))
+
+    _HWMON_CONTENT = itertools.chain(iter(("0", "0", "1")), itertools.repeat("0"))
+    _HWMON_BROKEN = os.path.exists(os.path.join(debug, "hwmon_broken"))
 
     _CHECK_INTERVAL_OK = 10
     _CHECK_INTERVAL_THROTTLED = 5
@@ -231,7 +238,81 @@ def get_proc_dt_model():
     return _proc_dt_model
 
 
-def get_vcgencmd_throttled_state(command):
+_past_flags_state = 0  # this will keep past flags active, even if vcgencmd is not working
+
+
+def get_throttled_state() -> ThrottleState:
+    global _past_flags_state
+
+    hwmon_state_usable = True
+    try:
+        hwmon_state = get_hwmon_throttled_state()
+    except ValueError:
+        hwmon_state_usable = False
+
+    try:
+        vcgencmd_state = get_vcgencmd_throttled_state()
+    except ValueError:
+        if hwmon_state_usable:
+            vcgencmd_state = 0
+        else:
+            raise
+
+    state = hwmon_state | vcgencmd_state
+
+    # manage past flags state -- vcgencmd state will do this for us, but hwmon won't
+    if state & _FLAG_UNDERVOLTAGE:
+        _past_flags_state |= _FLAG_PAST_UNDERVOLTAGE
+    if state & _FLAG_FREQ_CAPPED:
+        _past_flags_state |= _FLAG_PAST_FREQ_CAPPED
+    if state & _FLAG_THROTTLED:
+        _past_flags_state |= _FLAG_PAST_THROTTLED
+
+    # pull in past flags
+    state |= _past_flags_state
+
+    return ThrottleState.from_value(state)
+
+
+def get_hwmon_throttled_state() -> int:
+    # see https://www.kernel.org/doc/html/latest/hwmon/raspberrypi-hwmon.html
+    global _hwmon_past_undervoltage
+
+    path = _RASPBERRYPI_HWMON_PATH
+
+    if __LOCAL_DEBUG:
+        if _HWMON_BROKEN:
+            content = "error"
+        else:
+            content = next(_HWMON_CONTENT)
+    else:
+        if not os.path.exists(path):
+            return 0
+
+        with open(path) as f:
+            content = f.readline().strip(" \t\r\n\0")
+
+    if content not in ("0", "1"):
+        raise ValueError(
+            f"Cannot parse content of {path}, expected 0 or 1, got: {content!r}"
+        )
+
+    value = int(content)
+    if value == 1:
+        raw_value = _FLAG_THROTTLED | _FLAG_UNDERVOLTAGE
+    else:
+        raw_value = 0
+
+    logging.getLogger(_LOGGING_PREFIX).debug(
+        f"Got throttle state from hwmon: 0x{raw_value:x}"
+    )
+
+    return raw_value
+
+
+def get_vcgencmd_throttled_state() -> int:
+    command = f"{_VCGENCMD_PATH} get_throttled"
+
     if __LOCAL_DEBUG:
         if _VCGENCMD_BROKEN:
             output = ""
@@ -247,9 +328,11 @@ def get_vcgencmd_throttled_state(command):
     if "throttled=0x" not in output:
         raise ValueError(f"Cannot parse {command!r} output: {error if error else output}")
 
-    value = output[len("throttled=") :].strip(" \t\r\n\0")
-    value = int(value, 0)
-    return ThrottleState.from_value(value)
+    value = int(output[len("throttled=") :].strip(" \t\r\n\0"), 0)
+    logging.getLogger(_LOGGING_PREFIX).debug(
+        f"Got throttle state from vcgencmd: 0x{value:x}"
+    )
+    return value
 
 
 def is_octopi():
@@ -320,7 +403,10 @@ class PiSupportPlugin(
     # noinspection PyMissingConstructor
     def __init__(self):
         self._throttle_state = ThrottleState()
+
+        self._uevent_processor = None
         self._throttle_check = None
+
         self._throttle_undervoltage = False
         self._throttle_overheat = False
         self._throttle_check_enabled = True
@@ -332,7 +418,7 @@ class PiSupportPlugin(
         )
         if not self._throttle_check_enabled:
             self._logger.warning(
-                "Throttle check via vcgencmd disabled by user. Potential undervoltage or overheating issues will not be detected."
+                "Throttle check disabled by user. Potential undervoltage or overheating issues will not be detected."
             )
 
     # Additional permissions hook
@@ -486,19 +572,62 @@ class PiSupportPlugin(
     def on_startup(self, *args, **kwargs):
         if self._settings.get_boolean(["vcgencmd_throttle_check_enabled"]):
             self._check_throttled_state()
-            self._throttle_check = RepeatedTimer(
-                self._check_throttled_state_interval,
-                self._check_throttled_state,
-                condition=self._check_throttled_state_condition,
-            )
-            self._throttle_check.start()
+
+            if os.path.exists(_RASPBERRYPI_HWMON_PATH):
+                # hwmon kernel module seems to be there, we'll use the uevent notifications!
+                from .uevent import UEvent, UEventProcessor
+
+                self._logger.info("Using uevent triggered throttle checking")
+
+                def on_uevent(uevent: UEvent):
+                    # The events we are interested in look like this:
+                    #
+                    # change@/devices/platform/soc/soc:firmware/raspberrypi-hwmon/hwmon/hwmon1
+                    #    ACTION: change
+                    #    DEVPATH: /devices/platform/soc/soc:firmware/raspberrypi-hwmon/hwmon/hwmon1
+                    #    SUBSYSTEM: hwmon
+                    #    NAME: in0_lcrit_alarm
+                    #    OF_NAME: firmware
+                    #    OF_FULLNAME: /soc/firmware
+                    #    OF_COMPATIBLE_0: raspberrypi,bcm2835-firmware
+                    #    OF_COMPATIBLE_1: simple-mfd
+                    #    OF_COMPATIBLE_N: 2
+                    #    SEQNUM: 2037
+
+                    action = uevent.fields.get("ACTION")
+                    name = uevent.fields.get("NAME")
+                    devpath = uevent.fields.get("DEVPATH")
+                    if not action or not name or not devpath:
+                        return
+
+                    if (
+                        action == "change"
+                        and name == _RASPBERRYPI_HWMON_UEVENT_NAME
+                        and "/raspberrypi-hwmon/" in devpath
+                    ):
+                        self._logger.info("Got a hwmon uevent, checking throttled state")
+                        self._check_throttled_state()
+
+                self._uevent_processor = UEventProcessor()
+                self._uevent_processor.register_listener(on_uevent)
+                self._uevent_processor.start()
+
+            else:
+                # fall back to timer triggered throttle checks
+                self._logger.info("Using timer triggered throttle checking")
+
+                self._throttle_check = RepeatedTimer(
+                    self._check_throttled_state_interval,
+                    self._check_throttled_state,
+                    condition=self._check_throttled_state_condition,
+                )
+                self._throttle_check.start()
 
     # ~~ SettingsPlugin
 
     def get_settings_defaults(self):
         return {
-            "vcgencmd_throttle_check_enabled": True,
-            "vcgencmd_throttle_check_command": _VCGENCMD_THROTTLE,
+            "vcgencmd_throttle_check_enabled": True,  # historically named
             "ignore_unrecommended_model": False,
             "ignore_undervoltage_on_printstart": False,
             "ignore_default_password": False,
@@ -508,7 +637,6 @@ class PiSupportPlugin(
         return {
             "admin": [
                 ["vcgencmd_throttle_check_enabled"],
-                ["vcgencmd_throttle_check_command"],
             ]
         }
 
@@ -566,20 +694,12 @@ class PiSupportPlugin(
         if not self._throttle_check_enabled:
             return
 
-        command = self._settings.get(["vcgencmd_throttle_check_command"])
-
-        self._logger.debug(f"Retrieving throttle state via {command!r}")
+        self._logger.debug("Retrieving throttle state")
         try:
-            state = get_vcgencmd_throttled_state(command)
+            state = get_throttled_state()
         except ValueError as ex:
             error = str(ex)
             self._logger.warning(error)
-            if "VCHI initialization failed" in error:
-                self._logger.warning(
-                    'Make sure the system user "{}" is in the "video" group.'.format(
-                        getuser()
-                    )
-                )
             self._throttle_check_functional = False
             return
 
